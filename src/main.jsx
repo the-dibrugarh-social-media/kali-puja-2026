@@ -50,6 +50,9 @@ function App() {
   const [selected, setSelected] = useState(null), [category, setCategory] = useState(null), [step, setStep] = useState('category'), [identityType, setIdentityType] = useState('phone'), [phone, setPhone] = useState(''), [idToken, setIdToken] = useState(''), [rulesAccepted, setRulesAccepted] = useState(false), [error, setError] = useState(''), [busy, setBusy] = useState(false), [done, setDone] = useState(false);
   const [leaderboard, setLeaderboard] = useState({}), [resultsUnavailable, setResultsUnavailable] = useState(false);
   const [factIndex, setFactIndex] = useState(0), [photoIndex, setPhotoIndex] = useState(0);
+  const [adminKey, setAdminKey] = useState(''), [adminUnlocked, setAdminUnlocked] = useState(false), [adminPandals, setAdminPandals] = useState([]);
+  const [adminBusy, setAdminBusy] = useState(false), [adminError, setAdminError] = useState(''), [adminNotice, setAdminNotice] = useState('');
+  const [adminName, setAdminName] = useState(''), [adminArea, setAdminArea] = useState(''), [adminImage, setAdminImage] = useState('');
 
   async function refresh() {
     setLoading(true); setLoadError('');
@@ -102,10 +105,56 @@ function App() {
       if (data.status === 'success') setDone(true); else throw new Error(data.message || (data.status === 'duplicate' ? 'You have already voted in this category.' : 'Your vote could not be recorded.'));
     } catch (e) { setError(e.message); } finally { setBusy(false); }
   };
+  async function adminRequest(body, key = adminKey) {
+    const data = await apiPost({ ...body, key, eventId: EVENT_ID });
+    if (data.status !== 'success') throw new Error(data.message || 'The admin request could not be completed.');
+    return data;
+  }
+  async function loadAdminPandals(key = adminKey) {
+    const data = await adminRequest({ action: 'getAdminPandals' }, key);
+    setAdminPandals(data.pandals || []);
+    return data.pandals || [];
+  }
+  async function unlockAdmin(e) {
+    e?.preventDefault(); setAdminBusy(true); setAdminError(''); setAdminNotice('');
+    try { await loadAdminPandals(); setAdminUnlocked(true); setAdminNotice('Organizer access unlocked for this tab.'); }
+    catch (err) { setAdminError(err.message); }
+    finally { setAdminBusy(false); }
+  }
+  async function runAdminAction(body, successMessage) {
+    setAdminBusy(true); setAdminError(''); setAdminNotice('');
+    try {
+      await adminRequest(body);
+      await loadAdminPandals();
+      await refresh();
+      setAdminNotice(successMessage);
+      return true;
+    } catch (err) { setAdminError(err.message); return false; }
+    finally { setAdminBusy(false); }
+  }
+  async function createDemoPandals() {
+    setAdminBusy(true); setAdminError(''); setAdminNotice('');
+    const demos = [
+      { name: 'TEST ONLY — Demo Pandal A', area: 'Dibrugarh · Test Area' },
+      { name: 'TEST ONLY — Demo Pandal B', area: 'Dibrugarh · Test Area' },
+    ];
+    try {
+      for (const demo of demos) {
+        const existing = adminPandals.find(p => p.name === demo.name);
+        if (existing?.active) continue;
+        if (existing) await adminRequest({ action: 'setPandalActive', id: existing.id, active: true });
+        else await adminRequest({ action: 'addPandal', ...demo });
+      }
+      await loadAdminPandals(); await refresh();
+      setAdminNotice('Demo pandals are active. Deactivate them after your checks; test votes will remain in the results unless removed from the sheet.');
+    } catch (err) { setAdminError(err.message); try { await loadAdminPandals(); await refresh(); } catch {} }
+    finally { setAdminBusy(false); }
+  }
+  function lockAdmin() { setAdminKey(''); setAdminUnlocked(false); setAdminPandals([]); setAdminError(''); setAdminNotice('Organizer access locked.'); }
 
   return <>
     <header className="topbar"><a className="brand" href="#top" onClick={e => { e.preventDefault(); goTo('top'); }}><img src="/dibrugarh-logo.png" alt="The Dibrugarh"/><span><small>The_Dibrugarh presents</small><b>Kali Puja <i>2026</i></b></span></a>
-      <nav className={mobileOpen ? 'nav open' : 'nav'}><button onClick={() => goTo('discover')}>Discover pandals</button><button onClick={() => goTo('categories')}>Categories</button><button onClick={() => goTo('results')}>Leaderboard</button><button onClick={() => goTo('about')}>About Kali Puja</button><button className="nav-cta" onClick={() => goTo('discover')}>Search pandals <ArrowRight size={15}/></button></nav>
+      <nav className={mobileOpen ? 'nav open' : 'nav'}><button onClick={() => goTo('discover')}>Discover pandals</button><button onClick={() => goTo('categories')}>Categories</button><button onClick={() => goTo('results')}>Leaderboard</button><button onClick={() => goTo('about')}>About Kali Puja</button><button onClick={() => goTo('admin')}>Admin</button><button className="nav-cta" onClick={() => goTo('discover')}>Search pandals <ArrowRight size={15}/></button></nav>
       <button className="menu-toggle" aria-label={mobileOpen ? 'Close menu' : 'Open menu'} onClick={() => setMobileOpen(!mobileOpen)}>{mobileOpen ? <X/> : <Menu/>}</button>
     </header>
     <main id="top">
@@ -123,6 +172,10 @@ function App() {
       </section>
       <section className="categories section-pad reveal" id="categories"><div className="section-kicker"><span>THREE WAYS TO CELEBRATE</span><span>03 / 03</span></div><div className="section-heading"><h2>What speaks<br/><em>to you?</em></h2><p>Every pandal tells a different story.<br/>Choose the detail that stayed with you.</p></div><div className="category-grid">{CATEGORIES.map((c, i) => <article className={`category-tile ${c.tone}`} key={c.id}><div className="tile-index">0{i + 1}</div><c.icon size={23} strokeWidth={1.4}/><h3>{c.title}</h3><p>{c.description}</p><span className="tile-subtitle">{c.subtitle}</span><button aria-label={`Find a pandal for ${c.title}`} onClick={() => goTo('discover')}><ArrowRight size={17}/></button></article>)}</div></section>
       <section className="leaderboard section-pad reveal" id="results"><div className="section-kicker"><span>THE PEOPLE’S CHOICE</span><span>REFRESHES EVERY 30 SECONDS</span></div><div className="section-heading"><h2>Celebrating<br/><em>devotion.</em></h2><p>Three independent category leaderboards.<br/>Every vote celebrates the people behind the puja.</p></div><div className="leader-tabs">{CATEGORIES.map(c => { const ranked = Object.entries(leaderboard[c.id] || {}).sort((a, b) => b[1] - a[1]).slice(0, 3); return <div key={c.id}><span>{c.title}</span>{resultsUnavailable ? <strong>Live results are not connected yet</strong> : ranked.length ? <ol className="rank-list">{ranked.map(([id, count], index) => <li key={id}><i>{String(index + 1).padStart(2, '0')}</i><b>{pandals.find(p => String(p.id) === String(id))?.name || 'Pandal'}</b><strong>{count} {count === 1 ? 'vote' : 'votes'}</strong></li>)}</ol> : <strong>No votes recorded yet</strong>}</div>; })}</div></section>
+      <section className="admin section-pad reveal" id="admin"><div className="section-kicker"><span>ORGANIZER ACCESS</span><span>PRIVATE TOOLS</span></div><div className="admin-heading"><div><p className="eyebrow dark-eyebrow">THE DIBRUGARH · ADMIN</p><h2>Manage your<br/><em>pandal list.</em></h2></div><p>Add entries, create clearly marked demo pandals, or deactivate listings after the event.</p></div>
+        {!adminUnlocked ? <form className="admin-gate" onSubmit={unlockAdmin}><label htmlFor="admin-key">APPS SCRIPT ADMIN KEY</label><div className="admin-key-row"><input id="admin-key" type="password" autoComplete="current-password" value={adminKey} onChange={e => setAdminKey(e.target.value)} placeholder="Enter the ADMIN_KEY Script Property"/><button className="button button-gold" disabled={!adminKey.trim() || adminBusy}>{adminBusy ? 'Checking…' : 'Unlock admin'} <ArrowRight size={15}/></button></div><p>The key is kept in this tab’s memory and sent to your Apps Script over HTTPS. It is not saved in the site.</p></form> : <><div className="admin-toolbar"><p>Signed in for this tab. Use the Apps Script key configured in Project Settings → Script Properties.</p><button className="admin-lock" onClick={lockAdmin}>Lock admin</button></div><div className="admin-grid"><form className="admin-form" onSubmit={async e => { e.preventDefault(); const ok = await runAdminAction({ action: 'addPandal', name: adminName, area: adminArea, imageUrl: adminImage }, 'Pandal added to the live event.'); if (ok) { setAdminName(''); setAdminArea(''); setAdminImage(''); } }}><h3>Add a pandal</h3><label>PANDAL NAME<input required maxLength={100} value={adminName} onChange={e => setAdminName(e.target.value)} placeholder="Community pandal name"/></label><label>AREA<input maxLength={100} value={adminArea} onChange={e => setAdminArea(e.target.value)} placeholder="Locality in Dibrugarh"/></label><label>IMAGE URL <span>OPTIONAL</span><input type="url" value={adminImage} onChange={e => setAdminImage(e.target.value)} placeholder="https://…"/></label><button className="button button-gold" disabled={adminBusy || !adminName.trim()}>{adminBusy ? 'Saving…' : 'Add to live list'} <ArrowRight size={15}/></button></form><div className="admin-demo"><span className="admin-label">SAFE TEST LABELS</span><h3>Need to test voting?</h3><p>Add two entries named “TEST ONLY” to the live list. They will be visible to visitors; deactivate them when you’re done. Any test votes remain in the results until you remove them from the Votes sheet.</p><button className="button button-outline" disabled={adminBusy} onClick={createDemoPandals}>{adminBusy ? 'Working…' : 'Create 2 demo pandals'} <ArrowRight size={15}/></button></div></div><div className="admin-list"><div className="admin-list-heading"><h3>Event pandals</h3><span>{adminPandals.length} LISTINGS</span></div>{adminPandals.length ? adminPandals.map(p => <div className="admin-row" key={p.id}><div><strong>{p.name}</strong><span>{p.area || 'Dibrugarh'} · ID {p.id}</span></div><span className={p.active ? 'admin-status active' : 'admin-status'}>{p.active ? 'ACTIVE' : 'INACTIVE'}</span><button disabled={adminBusy} onClick={() => runAdminAction({ action: 'setPandalActive', id: p.id, active: !p.active }, p.active ? `${p.name} deactivated.` : `${p.name} reactivated.`)}>{p.active ? 'Deactivate' : 'Reactivate'}</button></div>) : <p className="admin-empty">No Kali Puja pandals are listed yet.</p>}</div></>}
+        {adminError && <p className="admin-feedback error" role="alert">{adminError}</p>}{adminNotice && <p className="admin-feedback" role="status">{adminNotice}</p>}
+      </section>
       <footer className="footer"><div className="footer-brand"><img src="/dibrugarh-logo.png" alt="The Dibrugarh"/><span>KALI PUJA <i>2026</i></span></div><p>A night of devotion.<br/>A celebration shared.</p><div className="dibrugarh-page"><div><span>THE CITY, BEYOND THE PUJA</span><p>Local stories, celebrations and everyday moments from Dibrugarh.</p></div><a className="social-cta" href="https://www.instagram.com/the_dibrugarh/" target="_blank" rel="noopener noreferrer" aria-label="Visit The_Dibrugarh page on Instagram"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="18" cy="6" r=".8" fill="currentColor"/></svg>Visit The_Dibrugarh page<ArrowRight size={15}/></a></div><div className="footer-bottom"><span>© 2026 The Dibrugarh · Festival experience</span><button onClick={() => goTo('top')}>Back to top ↑</button></div></footer>
     </main>
     {selected && <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) closeVote(); }}><section className="vote-modal" role="dialog" aria-modal="true" aria-labelledby="vote-title"><button className="modal-close" onClick={closeVote} aria-label="Close"><X/></button>{done ? <div className="success-view" role="status" aria-live="polite"><div className="success-mark"><Check size={32}/></div><p className="eyebrow dark-eyebrow">YOUR VOICE IS COUNTED</p><h2>Thank you for<br/><em>celebrating.</em></h2><p>Your vote for <b>{selected.name}</b> in <b>{category.title}</b> has been recorded.</p><button className="button button-dark" onClick={closeVote}>Back to the city <ArrowRight size={16}/></button></div> : <><div className="modal-progress"><span className={step === 'category' ? 'active' : 'complete'}/><span className={step === 'auth' ? 'active' : step === 'review' ? 'complete' : ''}/><span className={step === 'review' ? 'active' : ''}/></div><p className="eyebrow dark-eyebrow">YOUR VOTE · {selected.area || 'DIBRUGARH'}</p><h2 id="vote-title">{step === 'category' ? 'Choose your' : step === 'auth' ? 'Your voice,' : 'One last'}<br/><em>{step === 'category' ? 'category.' : step === 'auth' ? 'your way.' : 'look.'}</em></h2><div className="selected-pandal"><span>PANDAL SELECTED</span><strong>{selected.name}</strong><small><MapPin size={12}/>{selected.area || 'Dibrugarh'}</small></div>

@@ -29,6 +29,8 @@ Cloudflare Pages hosts the frontend only; the API/backend continues running as a
 
 The Apps Script Web App must be deployed and accessible before the live pandal search and voting will work. The web app URL is a public configuration value; never put `ADMIN_KEY` in the frontend environment.
 
+The site includes an **Admin** section in the top navigation. It sends the key entered by an organizer to the Apps Script admin actions over HTTPS and keeps it in tab memory only. To enable the organizer pandal list, copy the current `backend/Code.gs` into the Apps Script editor and deploy a new web app version. The Admin section can add and deactivate entries and create two clearly labeled test pandals; those test entries appear in the live public list until deactivated, and any test votes remain in the Votes sheet until removed there.
+
 ## Deploy the Apps Script backend
 
 1. Create a new Apps Script project bound to the spreadsheet that should hold the event data.
@@ -61,5 +63,6 @@ Use either `phone` or `idToken`; never send both. The client does not send a fol
 - `POST` with `action: "getAdminVotes"`, `key`, and optional `eventId` — private event vote records for authorized admin review.
 - `POST` with `action: "addPandal"`, `key`, `name`, `area`, and optional image fields — add an entry to this event.
 - `POST` with `action: "setPandalActive"`, `key`, `id`, and `active` — activate or deactivate this event's entry.
+- `POST` with `action: "getAdminPandals"`, `key`, and optional `eventId` — list this event's entries, including inactive ones, for the Admin section.
 
 Do not put `ADMIN_KEY` in the frontend. The image upload action stores photos in a Drive folder and enables link viewing so they can be used as public pandal images.

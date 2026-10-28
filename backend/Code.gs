@@ -173,6 +173,14 @@ function doPost(e) {
 
 function adminAction_(data) {
   if (!admin_(data.key)) return responseError_('Invalid admin key.');
+  if (data.action === 'getAdminPandals') {
+    const sheet = pandalsSheet_(), headers = headers_(sheet), rows = sheet.getDataRange().getValues(), eventId = String(data.eventId || EVENT_ID);
+    const values = rows.slice(1).filter(row => String(row[col_(headers, 'Event_ID')] || 'durga-puja-2026') === eventId).map(row => ({
+      id: row[col_(headers, 'ID')], name: row[col_(headers, 'Name')], area: row[col_(headers, 'Area')], img: row[col_(headers, 'ImageURL')],
+      active: row[col_(headers, 'Active')] === true || String(row[col_(headers, 'Active')]).toUpperCase() === 'TRUE', eventId: eventId
+    }));
+    return json_({ status: 'success', pandals: values });
+  }
   if (data.action === 'getAdminVotes') {
     const sheet = votesSheet_(), headers = headers_(sheet), rows = sheet.getDataRange().getValues(), eventId = String(data.eventId || EVENT_ID);
     const values = rows.slice(1).filter(row => String(row[col_(headers, 'Event_ID')] || 'durga-puja-2026') === eventId).map(row => ({
@@ -184,7 +192,8 @@ function adminAction_(data) {
   }
   if (data.action === 'addPandal') {
     const name = String(data.name || '').trim(); if (!name) return responseError_('Pandal name is required.');
-    const image = data.imageBase64 ? saveImage_(data.imageBase64, data.imageMimeType, data.imageFileName) : '';
+    const imageUrl = String(data.imageUrl || '').trim();
+    const image = data.imageBase64 ? saveImage_(data.imageBase64, data.imageMimeType, data.imageFileName) : (/^https?:\/\//i.test(imageUrl) ? imageUrl.slice(0, 2048) : '');
     const result = lock_(function () {
       const sheet = pandalsSheet_(), headers = headers_(sheet), rows = sheet.getDataRange().getValues();
       const idCol = col_(headers, 'ID'), ids = rows.slice(1).map(r => Number(r[idCol]) || 0), id = Math.max(0, ...ids) + 1, row = new Array(headers.length).fill('');
