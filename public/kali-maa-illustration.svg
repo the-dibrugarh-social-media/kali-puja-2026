@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">Maa Kali</title>
+  <desc id="desc">A devotional, stylized portrait of Maa Kali with a blue face, lotus halo, crown and red hibiscus garland.</desc>
+  <defs>
+    <radialGradient id="night" cx="50%" cy="42%" r="72%"><stop stop-color="#57263a"/><stop offset=".55" stop-color="#211622"/><stop offset="1" stop-color="#0d101b"/></radialGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%"><stop stop-color="#ffd983" stop-opacity=".32"/><stop offset=".62" stop-color="#db5668" stop-opacity=".16"/><stop offset="1" stop-color="#d74b61" stop-opacity="0"/></radialGradient>
+    <linearGradient id="skin" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#59c2dc"/><stop offset=".45" stop-color="#176c9d"/><stop offset="1" stop-color="#153b75"/></linearGradient>
+    <linearGradient id="crown" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#fff0a7"/><stop offset=".5" stop-color="#d9a64d"/><stop offset="1" stop-color="#8f5526"/></linearGradient>
+    <linearGradient id="cloth" x1="0" x2="1"><stop stop-color="#741b38"/><stop offset=".5" stop-color="#ba3046"/><stop offset="1" stop-color="#50172e"/></linearGradient>
+    <pattern id="stars" width="54" height="54" patternUnits="userSpaceOnUse"><circle cx="7" cy="9" r="1.5" fill="#ffe5a6" opacity=".52"/><circle cx="39" cy="31" r="1" fill="#fff5dd" opacity=".44"/><path d="M25 44v8m-4-4h8" stroke="#e7b85f" stroke-width="1" opacity=".3"/></pattern>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="12"/></filter>
+  </defs>
+  <rect width="1200" height="620" fill="url(#night)"/>
+  <rect width="1200" height="620" fill="url(#stars)"/>
+  <ellipse cx="600" cy="292" rx="355" ry="345" fill="url(#halo)"/>
+  <circle cx="600" cy="275" r="233" fill="none" stroke="#e4b45c" stroke-opacity=".3" stroke-width="2"/>
+  <circle cx="600" cy="275" r="212" fill="none" stroke="#efc878" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="3 10"/>
+  <g fill="#dfb967" opacity=".8">
+    <path d="M600 42c24 52 24 79 0 119-24-40-24-67 0-119Z"/><path d="M600 508c24-52 24-79 0-119-24 40-24 67 0 119Z"/>
+    <path d="M367 275c52-24 79-24 119 0-40 24-67 24-119 0Z"/><path d="M833 275c-52-24-79-24-119 0 40 24 67 24 119 0Z"/>
+    <path d="M435 110c51 34 67 56 71 102-46-4-68-20-102-71Z"/><path d="M765 440c-51-34-67-56-71-102 46 4 68 20 102 71Z"/>
+    <path d="M765 110c-51 34-67 56-71 102 46-4 68-20 102-71Z"/><path d="M435 440c51-34 67-56 71-102-46 4-68 20-102 71Z"/>
+  </g>
+  <ellipse cx="600" cy="560" rx="220" ry="74" fill="#090d18" opacity=".84"/>
+  <path d="M424 580c8-106 57-166 176-166s168 60 176 166H424Z" fill="url(#cloth)" stroke="#d7a34d" stroke-width="5"/>
+  <path d="M474 460c39 36 79 49 126 49s87-13 126-49" fill="none" stroke="#f0c66b" stroke-width="7" opacity=".88"/>
+  <g fill="#dc3345" stroke="#f3bd67" stroke-width="3">
+    <circle cx="492" cy="492" r="14"/><circle cx="527" cy="512" r="15"/><circle cx="563" cy="524" r="14"/><circle cx="600" cy="528" r="16"/><circle cx="637" cy="524" r="14"/><circle cx="673" cy="512" r="15"/><circle cx="708" cy="492" r="14"/>
+  </g>
+  <path d="M468 265c-41-104-5-186 132-214 137 28 173 110 132 214l-28 91H496l-28-91Z" fill="#111224" stroke="#d5a54f" stroke-width="5"/>
+  <path d="M490 218c18-121 58-163 110-174 52 11 92 53 110 174-51-25-169-25-220 0Z" fill="url(#crown)" stroke="#ffe9a0" stroke-width="4"/>
+  <path d="M516 186c30-67 56-99 84-119 28 20 54 52 84 119-48-17-120-17-168 0Z" fill="#a21f40" stroke="#f5d17b" stroke-width="4"/>
+  <path d="M600 75v96m-31-47h62m-52-29 42 56m0-56-42 56" stroke="#ffe9a0" stroke-width="5" stroke-linecap="round"/>
+  <g fill="#f5d276"><circle cx="527" cy="201" r="8"/><circle cx="556" cy="190" r="8"/><circle cx="600" cy="184" r="9"/><circle cx="644" cy="190" r="8"/><circle cx="673" cy="201" r="8"/></g>
+  <path d="M484 282c-29-74-5-124 38-140 42 18 60 51 68 102m126 38c29-74 5-124-38-140-42 18-60 51-68 102" fill="#080a16" stroke="#b47d42" stroke-width="8"/>
+  <path d="M520 250c-20 34-25 72-16 110 10 55 49 101 96 117 47-16 86-62 96-117 9-38 4-76-16-110-41-26-119-26-160 0Z" fill="url(#skin)" stroke="#dfb35c" stroke-width="4"/>
+  <path d="M533 279c17-17 39-18 59-4-17 21-40 25-59 4Zm75-4c20-14 42-13 59 4-19 21-42 17-59-4Z" fill="#f4e2c0"/>
+  <ellipse cx="563" cy="280" rx="7" ry="10" fill="#171323"/><ellipse cx="637" cy="280" rx="7" ry="10" fill="#171323"/>
+  <path d="M546 261c17-12 32-13 48-6m12 0c16-7 31-6 48 6" fill="none" stroke="#121326" stroke-width="8" stroke-linecap="round"/>
+  <path d="M600 259v48l-13 9 13 7 13-7-13-9" fill="none" stroke="#f0c973" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M580 343c13 7 27 7 40 0-1 24-7 40-20 47-13-7-19-23-20-47Z" fill="#be2740" stroke="#f4ae74" stroke-width="3"/>
+  <path d="M560 324c13 7 27 10 40 10s27-3 40-10" fill="none" stroke="#101326" stroke-width="5" stroke-linecap="round"/>
+  <path d="M530 345c-24 22-35 52-30 83m170-83c24 22 35 52 30 83" fill="none" stroke="#e3b961" stroke-width="7"/>
+  <g fill="#e5b65d" stroke="#713444" stroke-width="3"><circle cx="499" cy="429" r="13"/><circle cx="532" cy="451" r="13"/><circle cx="567" cy="463" r="13"/><circle cx="600" cy="467" r="14"/><circle cx="633" cy="463" r="13"/><circle cx="668" cy="451" r="13"/><circle cx="701" cy="429" r="13"/></g>
+  <g fill="#f1cd7a"><path d="M294 524c18-36 32-42 50-46-4 21-10 34-50 46Zm612 0c-18-36-32-42-50-46 4 21 10 34 50 46Z"/><circle cx="315" cy="522" r="5"/><circle cx="885" cy="522" r="5"/></g>
+</svg>
