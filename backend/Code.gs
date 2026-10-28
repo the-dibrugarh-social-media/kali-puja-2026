@@ -119,6 +119,11 @@ function saveImage_(base64, mime, name) {
   file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
   return 'https://lh3.googleusercontent.com/d/' + file.getId();
 }
+function trashDriveImage_(url) {
+  const match = String(url || '').match(/\/d\/([A-Za-z0-9_-]+)/);
+  if (!match) return;
+  try { DriveApp.getFileById(match[1]).setTrashed(true); } catch (err) { console.warn('Could not trash replaced pandal image: ' + err); }
+}
 function responseError_(message, status) { return json_({ status: status || 'error', message: message }); }
 
 function doGet(e) {
@@ -229,7 +234,14 @@ function adminAction_(data) {
         const rowNumber = i + 1, imageCol = col_(headers, 'ImageURL');
         sheet.getRange(rowNumber, col_(headers, 'Name') + 1).setValue(safeCell_(name));
         sheet.getRange(rowNumber, col_(headers, 'Area') + 1).setValue(safeCell_(String(data.area || '').trim()));
-        if (data.imageBase64) sheet.getRange(rowNumber, imageCol + 1).setValue(saveImage_(data.imageBase64, data.imageMimeType, data.imageFileName));
+        const currentImage = String(rows[i][imageCol] || '');
+        let nextImage = currentImage;
+        if (data.imageBase64) nextImage = saveImage_(data.imageBase64, data.imageMimeType, data.imageFileName);
+        else if (data.removeImage === true) nextImage = '';
+        if (nextImage !== currentImage) {
+          sheet.getRange(rowNumber, imageCol + 1).setValue(nextImage);
+          if (currentImage) trashDriveImage_(currentImage);
+        }
         return true;
       }
       return false;
