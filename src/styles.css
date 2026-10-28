@@ -251,6 +251,12 @@ body{background:#080910;color:#f0ebdf}
 @media(max-width:850px){.leaderboard .leader-tabs{grid-template-columns:1fr}.leaderboard .leader-tabs>div,.leaderboard .leader-tabs>div:first-child{padding:18px 20px;border-right:0;border-bottom:1px solid #e4b94e66}.leaderboard .leader-tabs>div:last-child{border-bottom:0}.leaderboard .leader-tabs>div>span{font-size:21px}}
 @media(max-width:620px){.leaderboard .section-kicker span:last-child{font-size:8px;padding:7px 8px}.leaderboard .section-heading>p.leaderboard-description strong{font-size:16px}.leaderboard .rank-list li{grid-template-columns:34px minmax(0,1fr) auto;gap:9px}.leaderboard .rank-list li>i{width:30px;height:30px}.leaderboard .rank-entry>b{font-size:12px}.leaderboard .rank-entry>small{font-size:9px}.leaderboard .rank-list li>strong{font-size:9px;padding:6px 8px}}
 
+.pandal-card[role="button"]{cursor:pointer;transition:transform .2s,box-shadow .2s}
+.pandal-card[role="button"]:hover{transform:translateY(-3px);box-shadow:0 15px 34px #22130f26}
+.pandal-card[role="button"]:focus-visible{outline:3px solid #b38a42;outline-offset:4px}
+.pandal-card-arrow{width:34px;height:34px;flex:0 0 34px;border:1px solid #c7b9a3;color:#44382e;display:grid;place-items:center;transition:background .2s,color .2s,transform .2s}
+.pandal-card[role="button"]:hover .pandal-card-arrow{background:#d8b36a;color:#16110b;transform:translateX(2px)}
+
 .vote-duplicate-warning{display:grid;gap:6px;margin:18px 0 10px;padding:14px 16px;border:2px solid #e85a62;border-left-width:6px;background:linear-gradient(105deg,#742431,#481d2b);color:#fff5ef;text-align:left;box-shadow:0 0 0 4px #d92c391f,0 9px 24px #5a142a30}
 .vote-duplicate-warning strong{color:#ffd7ca;font-size:10px;font-weight:900;letter-spacing:.16em;line-height:1.4}
 .vote-duplicate-warning span{font-size:13px;font-weight:650;letter-spacing:0;line-height:1.55}
