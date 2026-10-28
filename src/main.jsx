@@ -67,11 +67,13 @@ async function voteDeviceContext() {
 function voteLocation() {
   return new Promise(resolve => {
     if (!navigator.geolocation) return resolve(null);
-    navigator.geolocation.getCurrentPosition(
-      position => resolve({ lat: position.coords.latitude, lng: position.coords.longitude, accuracy: position.coords.accuracy }),
-      () => resolve(null),
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 },
-    );
+    try {
+      navigator.geolocation.getCurrentPosition(
+        position => resolve({ lat: position.coords.latitude, lng: position.coords.longitude, accuracy: position.coords.accuracy }),
+        () => resolve(null),
+        { enableHighAccuracy: true, maximumAge: 0 },
+      );
+    } catch { resolve(null); }
   });
 }
 async function prepareImageUpload(file) {
@@ -97,7 +99,7 @@ function App() {
   const [adminKey, setAdminKey] = useState(''), [adminUnlocked, setAdminUnlocked] = useState(false), [adminPandals, setAdminPandals] = useState([]);
   const [adminBusy, setAdminBusy] = useState(false), [adminError, setAdminError] = useState(''), [adminNotice, setAdminNotice] = useState('');
   const [adminName, setAdminName] = useState(''), [adminArea, setAdminArea] = useState(''), [adminImageFile, setAdminImageFile] = useState(null);
-  const [shareLocation, setShareLocation] = useState(false);
+  const [locationChoice, setLocationChoice] = useState('undecided'), [gpsLocation, setGpsLocation] = useState(null), [locationBusy, setLocationBusy] = useState(false);
 
   async function refresh() {
     setLoading(true); setLoadError('');
@@ -133,7 +135,7 @@ function App() {
   const areas = useMemo(() => ['All areas', ...new Set(pandals.map(p => p.area).filter(Boolean))], [pandals]);
   const filtered = useMemo(() => { const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean); return pandals.filter(p => (area === 'All areas' || p.area === area) && terms.every(t => `${p.name} ${p.area} ${p.keywords || ''}`.toLowerCase().includes(t))); }, [pandals, query, area]);
   const goTo = id => { setSection(id); setMobileOpen(false); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); };
-  const openVote = p => { setSelected(p); setCategory(null); setStep('category'); setDone(false); setRulesAccepted(false); setShareLocation(false); setError(''); };
+  const openVote = p => { setSelected(p); setCategory(null); setStep('category'); setDone(false); setRulesAccepted(false); setLocationChoice('undecided'); setGpsLocation(null); setLocationBusy(false); setError(''); };
   const closeVote = () => { setSelected(null); setCategory(null); setError(''); };
   const startGoogle = () => {
     setIdentityType('google'); setError('');
@@ -146,11 +148,16 @@ function App() {
   const submit = async () => {
     setBusy(true); setError('');
     try {
+      let gps = gpsLocation;
+      if (locationChoice === 'undecided') {
+        setLocationChoice('requesting'); setLocationBusy(true);
+        gps = await voteLocation();
+        setGpsLocation(gps); setLocationChoice(gps ? 'shared' : 'declined'); setLocationBusy(false);
+      }
       const { device, deviceFingerprint } = await voteDeviceContext();
-      const gps = shareLocation ? await voteLocation() : null;
       const data = await apiVote({ eventId: EVENT_ID, categoryId: category.id, pandalId: selected.id, ...(identityType === 'google' ? { idToken } : { phone }), rulesAccepted, device, deviceFingerprint, ...(gps ? { gps } : {}) });
       if (data.status === 'success') setDone(true); else throw new Error(data.message || (data.status === 'duplicate' ? 'You have already voted in this category.' : 'Your vote could not be recorded.'));
-    } catch (e) { setError(e.message); } finally { setBusy(false); }
+    } catch (e) { setError(e.message); } finally { setBusy(false); setLocationBusy(false); }
   };
   async function adminRequest(body, key = adminKey) {
     const data = await apiPost({ ...body, key, eventId: EVENT_ID });
@@ -241,8 +248,8 @@ function App() {
     {selected && <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) closeVote(); }}><section className="vote-modal" role="dialog" aria-modal="true" aria-labelledby="vote-title"><button className="modal-close" onClick={closeVote} aria-label="Close"><X/></button>{done ? <div className="success-view" role="status" aria-live="polite"><div className="success-mark"><Check size={32}/></div><p className="eyebrow dark-eyebrow">YOUR VOICE IS COUNTED</p><h2>Thank you for<br/><em>celebrating.</em></h2><p>Your vote for <b>{selected.name}</b> in <b>{category.title}</b> has been recorded.</p><button className="button button-dark" onClick={closeVote}>Back to the city <ArrowRight size={16}/></button></div> : <><div className="modal-progress"><span className={step === 'category' ? 'active' : 'complete'}/><span className={step === 'auth' ? 'active' : step === 'review' ? 'complete' : ''}/><span className={step === 'review' ? 'active' : ''}/></div><p className="eyebrow dark-eyebrow">YOUR VOTE · {selected.area || 'DIBRUGARH'}</p><h2 id="vote-title">{step === 'category' ? 'Choose your' : step === 'auth' ? 'Your voice,' : 'One last'}<br/><em>{step === 'category' ? 'category.' : step === 'auth' ? 'your way.' : 'look.'}</em></h2><div className="selected-pandal"><span>PANDAL SELECTED</span><strong>{selected.name}</strong><small><MapPin size={12}/>{selected.area || 'Dibrugarh'}</small></div>
       {step === 'category' && <><p className="modal-hint">Choose one category for this vote. You can vote in the other categories separately.</p><div className="modal-categories">{CATEGORIES.map(c => <button key={c.id} onClick={() => setCategory(c)} className={category?.id === c.id ? `selected ${c.tone}` : c.tone}><c.icon size={18}/><span><b>{c.title}</b><small>{c.subtitle}</small></span>{category?.id === c.id && <Check size={16}/>}</button>)}</div><button disabled={!category} className="button button-dark full-button" onClick={() => { setError(''); setStep('auth'); }}>Continue <ArrowRight size={16}/></button></>}
       {step === 'auth' && <><p className="modal-hint">Sign in with Google, or enter a mobile number. Phone entry does not verify ownership and does not use OTP.</p><div className="auth-options"><button className={identityType === 'phone' ? 'auth-option active-auth' : 'auth-option'} onClick={() => { setIdentityType('phone'); setError(''); }}><span className="phone-icon">+91</span>Mobile number</button><button className={identityType === 'google' ? 'auth-option active-auth' : 'auth-option'} onClick={startGoogle}><span className="google-g">G</span>Google</button></div>{identityType === 'phone' ? <label className="phone-field"><span>INDIAN MOBILE NUMBER</span><div><b>+91</b><input inputMode="tel" autoComplete="tel-national" placeholder="98765 43210" value={phone} onChange={e => setPhone(e.target.value.replace(/[^\d\s-]/g, '').slice(0, 14))}/></div></label> : <p className="google-note">Complete Google’s sign-in prompt to continue.</p>}<div className="modal-actions"><button className="back-button" onClick={() => setStep('category')}><ArrowLeft size={15}/> Back</button><button className="button button-dark" disabled={identityType === 'phone' && phone.replace(/\D/g, '').length < 10 || identityType === 'google' && !idToken} onClick={() => setStep('review')}>Review vote <ArrowRight size={16}/></button></div></>}
-      {step === 'review' && <><p className="modal-hint">Your vote can’t be changed after it is submitted.</p><div className="review-box"><div><span>YOUR PANDAL</span><strong>{selected.name}</strong></div><div><span>CATEGORY</span><strong>{category.title}</strong></div><div><span>VOTING AS</span><strong>{identityType === 'google' ? 'Google account' : '+91 ' + phone}</strong></div></div><p className="vote-privacy-note">Browser/device details and your IP address on the live site are used for vote integrity. Exact location is optional and is only requested if you choose to share it below.</p><label className="rules-check"><input type="checkbox" checked={rulesAccepted} onChange={e => setRulesAccepted(e.target.checked)}/><span>I agree to the fair voting rules and understand I can submit one vote per category.</span></label><label className="rules-check location-consent"><input type="checkbox" checked={shareLocation} onChange={e => setShareLocation(e.target.checked)}/><span>Share my precise location for vote integrity <i>OPTIONAL</i></span></label><div className="modal-actions"><button className="back-button" onClick={() => setStep('auth')}><ArrowLeft size={15}/> Back</button><button className={busy ? 'button button-dark submitting' : 'button button-dark'} aria-busy={busy} disabled={busy || !rulesAccepted} onClick={submit}>{busy ? <><span className="button-spinner"/>Submitting vote…</> : <>Confirm vote <Check size={16}/></>}</button></div></>}
-      {error && <p className="form-error" role="alert">{error}</p>}</>}</section></div>}
+      {step === 'review' && <><p className="modal-hint">Your vote can’t be changed after it is submitted.</p><div className="review-box"><div><span>YOUR PANDAL</span><strong>{selected.name}</strong></div><div><span>CATEGORY</span><strong>{category.title}</strong></div><div><span>VOTING AS</span><strong>{identityType === 'google' ? 'Google account' : '+91 ' + phone}</strong></div></div><p className="vote-duplicate-warning" role="note">DUPLICATE VOTES WILL BE CANCELLED.</p><label className="rules-check"><input type="checkbox" checked={rulesAccepted} onChange={e => setRulesAccepted(e.target.checked)}/><span>I agree to the fair voting rules and understand I can submit one vote per category.</span></label><div className="modal-actions"><button className="back-button" onClick={() => setStep('auth')}><ArrowLeft size={15}/> Back</button><button className={busy ? 'button button-dark submitting' : 'button button-dark'} aria-busy={busy} disabled={busy || !rulesAccepted} onClick={submit}>{busy ? <><span className="button-spinner"/>{locationBusy ? 'Waiting for location permission…' : 'Submitting vote…'}</> : <>Confirm vote <Check size={16}/></>}</button></div></>}
+      {error && <p className={/^(DUPLICATE VOTE|VOTE BLOCKED)/.test(error) ? 'form-error form-error-loud' : 'form-error'} role="alert">{error}</p>}</>}</section></div>}
   </>;
 }
 createRoot(document.getElementById('root')).render(<App/>);
