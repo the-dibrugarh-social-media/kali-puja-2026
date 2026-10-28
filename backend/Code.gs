@@ -156,11 +156,12 @@ function doPost(e) {
       const userAgent = String(device.userAgent || '').slice(0, 300), screen = String(device.screen || '').slice(0, 30), timezone = String(device.timezone || '').slice(0, 60);
       const ipHits = ip ? categoryRows.filter(r => r[col_(headers, 'IP')] === ip).length : 0;
       const gpsHits = hasGps ? categoryRows.filter(r => Number.isFinite(Number(r[col_(headers, 'Lat')])) && Math.abs(Number(r[col_(headers, 'Lat')]) - lat) < 0.0005 && Math.abs(Number(r[col_(headers, 'Lng')]) - lng) < 0.0005).length : 0;
-      const deviceHits = fp ? categoryRows.filter(r => String(r[col_(headers, 'DeviceFingerprint')] || '') === fp).length : 0;
+      const deviceHits = fp ? eventRows.filter(r => String(r[col_(headers, 'DeviceFingerprint')] || '') === fp).length : 0;
+      const deviceCategoryHits = fp ? categoryRows.filter(r => String(r[col_(headers, 'DeviceFingerprint')] || '') === fp).length : 0;
       const profileHits = userAgent && screen && timezone ? categoryRows.filter(r => String(r[col_(headers, 'UserAgent')]) === userAgent && String(r[col_(headers, 'Screen')]) === screen && String(r[col_(headers, 'Timezone')]) === timezone).length : 0;
-      const deviceMatch = deviceHits > 0 || profileHits > 0;
+      const deviceMatch = deviceCategoryHits > 0 || profileHits > 0;
       const multiSignalDuplicate = deviceMatch && (ipHits > 0 || gpsHits > 0);
-      if (multiSignalDuplicate) return { suspicious: true };
+      if ((fp && deviceCategoryHits > 0) || multiSignalDuplicate) return { suspicious: true };
       const row = new Array(headers.length).fill('');
       const put = (name, value) => { const index = col_(headers, name); if (index >= 0) row[index] = value; };
       put('Timestamp', new Date()); put('VoterEmail', safeCell_(voterId)); put('VoterType', voterType); put('Pandal_ID', pandal.id); put('Pandal_Name', safeCell_(pandal.name));
@@ -174,7 +175,7 @@ function doPost(e) {
     });
     if (!outcome.ok) return responseError_('The voting service is busy. Please try again shortly.');
     if (outcome.value.duplicate) return responseError_('DUPLICATE VOTE — You have already voted in this category. Duplicate votes will be cancelled.', 'duplicate');
-    if (outcome.value.suspicious) return responseError_('VOTE BLOCKED — This submission strongly matches another vote on this device and network or location. Duplicate votes will be cancelled. Contact the organizers if you think this is a mistake.', 'duplicate');
+    if (outcome.value.suspicious) return responseError_('VOTE BLOCKED — This browser/device has already voted in this category, or this submission strongly matches another vote across device, network, or location signals. Duplicate votes will be cancelled. Contact the organizers if you think this is a mistake.', 'duplicate');
     clearCaches_();
     return json_({ status: 'success', message: 'Vote recorded.', eventId: EVENT_ID, categoryId: categoryId });
   } catch (err) { return responseError_(String(err)); }
