@@ -220,6 +220,33 @@ function adminAction_(data) {
     if (!result.ok) return responseError_('The service is busy. Try again.');
     cache_().remove('pandals_' + EVENT_ID); return json_({ status: 'success', id: result.value });
   }
+  if (data.action === 'updatePandal') {
+    const name = String(data.name || '').trim(); if (!name) return responseError_('Pandal name is required.');
+    const result = lock_(function () {
+      const sheet = pandalsSheet_(), headers = headers_(sheet), rows = sheet.getDataRange().getValues();
+      const idCol = col_(headers, 'ID'), eventCol = col_(headers, 'Event_ID');
+      for (let i = 1; i < rows.length; i++) if (String(rows[i][idCol]) === String(data.id) && String(rows[i][eventCol]) === EVENT_ID) {
+        const rowNumber = i + 1, imageCol = col_(headers, 'ImageURL');
+        sheet.getRange(rowNumber, col_(headers, 'Name') + 1).setValue(safeCell_(name));
+        sheet.getRange(rowNumber, col_(headers, 'Area') + 1).setValue(safeCell_(String(data.area || '').trim()));
+        if (data.imageBase64) sheet.getRange(rowNumber, imageCol + 1).setValue(saveImage_(data.imageBase64, data.imageMimeType, data.imageFileName));
+        return true;
+      }
+      return false;
+    });
+    if (!result.ok) return responseError_('The service is busy. Try again.'); if (!result.value) return responseError_('Pandal not found.');
+    cache_().remove('pandals_' + EVENT_ID); return json_({ status: 'success' });
+  }
+  if (data.action === 'deletePandal') {
+    const result = lock_(function () {
+      const sheet = pandalsSheet_(), headers = headers_(sheet), rows = sheet.getDataRange().getValues();
+      const idCol = col_(headers, 'ID'), eventCol = col_(headers, 'Event_ID');
+      for (let i = 1; i < rows.length; i++) if (String(rows[i][idCol]) === String(data.id) && String(rows[i][eventCol]) === EVENT_ID) { sheet.deleteRow(i + 1); return true; }
+      return false;
+    });
+    if (!result.ok) return responseError_('The service is busy. Try again.'); if (!result.value) return responseError_('Pandal not found.');
+    cache_().remove('pandals_' + EVENT_ID); return json_({ status: 'success' });
+  }
   if (data.action === 'setPandalActive') {
     const result = lock_(function () {
       const sheet = pandalsSheet_(), headers = headers_(sheet), rows = sheet.getDataRange().getValues(), idCol = col_(headers, 'ID'), eventCol = col_(headers, 'Event_ID');
