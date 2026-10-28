@@ -34,7 +34,7 @@ The vote review screen explains the voting rules. Submissions include browser/de
 The GitHub Actions workflow in `.github/workflows/deploy-pages.yml` builds the site on pushes to `main` and deploys it to GitHub Pages. It can also be run manually from the repository’s **Actions** tab.
 
 1. In the repository’s **Settings → Pages**, choose **GitHub Actions** as the publishing source.
-2. In **Settings → Secrets and variables → Actions → Variables**, add `VITE_APPS_SCRIPT_URL` with the deployed Apps Script web app URL. This URL is public frontend configuration, not a secret.
+2. The workflow uses the shared Apps Script endpoint by default. If you change deployments, set the repository variable `VITE_APPS_SCRIPT_URL` under **Settings → Secrets and variables → Actions → Variables** to override it.
 3. Push to `main` or run **Deploy to GitHub Pages** from the Actions tab. The project site will be at `https://the-dibrugarh-social-media.github.io/kali-puja-2026/`.
 
 The workflow builds with the repository subpath so the logo, local Maa Kali image and admin route work on GitHub Pages. The hidden admin page is at `/kali-puja-2026/admin`. GitHub Pages has no server-side vote proxy, so those submissions go directly to Apps Script and do not include Cloudflare’s visitor IP.
