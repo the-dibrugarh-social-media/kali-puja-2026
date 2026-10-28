@@ -2,9 +2,9 @@
   "name": "Kali Puja · Dibrugarh 2026",
   "short_name": "Kali Puja",
   "description": "Discover and celebrate Dibrugarh's Kali Puja pandals.",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#100d0c",
   "theme_color": "#100d0c",
-  "icons": [{ "src": "/dibrugarh-logo.png", "sizes": "any", "type": "image/png", "purpose": "any maskable" }]
+  "icons": [{ "src": "dibrugarh-logo.png", "sizes": "any", "type": "image/png", "purpose": "any maskable" }]
 }
