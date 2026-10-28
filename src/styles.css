@@ -596,3 +596,4 @@ body{background:#080910;color:#f0ebdf}
 @media(max-width:620px){.pandal-scroll{max-height:70svh}}
 .leaderboard .leaderboard-title{margin:0}
 @media(max-width:620px){.leaderboard .section-kicker{align-items:flex-start;gap:10px;flex-wrap:wrap}}
+.vote-callout strong{color:#ffd84d;text-shadow:0 0 14px #ffd84d55}
