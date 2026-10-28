@@ -277,8 +277,6 @@ body{background:#080910;color:#f0ebdf}
 .brand img{width:102px;height:102px}
 @media(max-width:620px){html{scroll-padding-top:90px}.topbar{height:92px}.brand img{width:76px;height:76px}.nav{top:92px}}
 @media(max-width:620px){.hero-art .mandala{left:42%;top:53%;font-size:65vw;opacity:.3;color:#f1cd78;text-shadow:0 0 32px #f3ca6655}}
-.mandala{width:min(36vw,520px);height:auto;font-size:initial;transform-box:fill-box;transform-origin:center}
-@media(max-width:620px){.hero-art .mandala{width:65vw;height:auto}}
 
 .vote-duplicate-warning{display:grid;gap:6px;margin:18px 0 10px;padding:14px 16px;border:2px solid #e85a62;border-left-width:6px;background:linear-gradient(105deg,#742431,#481d2b);color:#fff5ef;text-align:left;box-shadow:0 0 0 4px #d92c391f,0 9px 24px #5a142a30}
 .vote-duplicate-warning strong{color:#ffd7ca;font-size:10px;font-weight:900;letter-spacing:.16em;line-height:1.4}
