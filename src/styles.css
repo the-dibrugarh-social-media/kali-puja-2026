@@ -541,3 +541,15 @@ body{background:#080910;color:#f0ebdf}
 }
 .hero-feature{border:0;background:transparent;box-shadow:none;padding:10px;overflow:visible}
 .hero-feature-photo .intro-photo-stack img.active{opacity:.84}
+@media(max-width:620px){.pandal-image{height:260px}}
+@media(max-width:620px){
+  .pandal-image{height:230px}
+  .hero-feature .fact-card{min-height:144px;padding:8px 5px 16px}
+  .hero-feature .fact-card-text{min-height:78px}
+  .hero-feature .hero-feature-photo{height:160px}
+}
+@media(max-width:620px){
+  .pandal-image{height:185px}
+  .pandal-info{padding:13px}
+  .pandal-info h3{font-size:15px}
+}
