@@ -108,7 +108,10 @@ function App() {
   };
   async function adminRequest(body, key = adminKey) {
     const data = await apiPost({ ...body, key, eventId: EVENT_ID });
-    if (data.status !== 'success') throw new Error(data.message || 'The admin request could not be completed.');
+    if (data.status !== 'success') {
+      if (/unknown admin action/i.test(data.message || '')) throw new Error('The Apps Script deployment is outdated. Replace its Code.gs with this project’s backend/Code.gs, then deploy a new web app version.');
+      throw new Error(data.message || 'The admin request could not be completed.');
+    }
     return data;
   }
   async function loadAdminPandals(key = adminKey) {

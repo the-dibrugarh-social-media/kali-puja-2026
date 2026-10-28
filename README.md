@@ -29,7 +29,7 @@ Cloudflare Pages hosts the frontend only; the API/backend continues running as a
 
 The Apps Script Web App must be deployed and accessible before the live pandal search and voting will work. The web app URL is a public configuration value; never put `ADMIN_KEY` in the frontend environment.
 
-The organizer console is available only by navigating directly to `/admin`; there is no public navigation link. It sends the key entered by an organizer to the Apps Script admin actions over HTTPS and keeps it in tab memory only. To enable the organizer pandal list, copy the current `backend/Code.gs` into the Apps Script editor and deploy a new web app version. The Admin console can add and deactivate entries and create two clearly labeled test pandals; those test entries appear in the live public list until deactivated, and any test votes remain in the Votes sheet until removed there.
+The organizer console is available only by navigating directly to `/admin`; there is no public navigation link. It sends the key entered by an organizer to the Apps Script admin actions over HTTPS and keeps it in tab memory only. The Apps Script deployment must include the current `backend/Code.gs`, including the `getAdminPandals` action. If `/admin` shows “Unknown admin action,” open the Apps Script project, replace its code with `backend/Code.gs`, save, then choose **Deploy → Manage deployments → Edit → New version → Deploy**. Keep the same web app deployment URL. The Admin console can add and deactivate entries and create two clearly labeled test pandals; those test entries appear in the live public list until deactivated, and any test votes remain in the Votes sheet until removed there.
 
 ## Deploy the Apps Script backend
 
