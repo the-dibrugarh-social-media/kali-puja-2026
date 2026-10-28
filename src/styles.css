@@ -269,6 +269,9 @@ body{background:#080910;color:#f0ebdf}
 .instagram-spotlight-copy>p:last-child{margin:0;color:#d8c9cb;font-size:13px;line-height:1.65}
 .instagram-visit{display:inline-flex;align-items:center;justify-content:center;gap:13px;min-height:58px;padding:0 24px;border:1px solid #f0c96b;background:#f0c96b;color:#1b1110;text-decoration:none;font-size:15px;font-weight:800;white-space:nowrap;box-shadow:0 0 30px #f0c96b3d;transition:transform .2s,background .2s}
 .instagram-visit:hover{transform:translateY(-2px);background:#ffe394}
+.instagram-visit{gap:15px;min-height:72px;padding:0 22px}
+.instagram-mark{width:36px;height:36px;flex:none}
+.instagram-handle{font-size:clamp(19px,2.2vw,28px);font-weight:900;letter-spacing:-.035em}
 @media(max-width:620px){.instagram-spotlight{display:block}.instagram-spotlight-copy h2{font-size:42px}.instagram-visit{margin-top:22px}}
 .topbar{height:118px}
 .brand img{width:102px;height:102px}
