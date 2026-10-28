@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build the site
-        run: npm run build -- --base=/the_dibrugarh/
+        run: npm run build -- --base="/${{ github.event.repository.name }}/"
         env:
           VITE_APPS_SCRIPT_URL: ${{ vars.VITE_APPS_SCRIPT_URL }}
       - name: Enable client-side routes
