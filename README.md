@@ -25,7 +25,9 @@ Cloudflare Pages hosts the frontend only; the API/backend continues running as a
 2. In Cloudflare, open **Workers & Pages → Create application → Pages → Import an existing Git repository**, then choose the repository.
 3. Set the project root directory to `outputs/kali-puja-2026` if the repository contains a parent folder. Use build command `npm run build` and output directory `dist`.
 4. In Pages **Settings → Environment variables**, add `VITE_APPS_SCRIPT_URL` with the deployed Apps Script Web App URL. `VITE_GOOGLE_CLIENT_ID` is optional because the existing client ID is already the default.
-5. Deploy. Cloudflare builds and serves the React site; requests for public pandals, category counts, and vote submissions go from the site to Apps Script.
+5. Make sure `VITE_APPS_SCRIPT_URL` is set for both Production and Preview. Deploy. Cloudflare builds and serves the React site; public pandal and results reads go to Apps Script, while vote submissions pass through the Pages Function at `/api/vote` so it can attach Cloudflare's visitor IP header.
+
+The vote review screen explains what is collected. Submissions include browser/device metadata and a SHA-256 device signal. Precise location is requested only when a voter checks the optional location box; denying or timing out location does not block a vote. On Cloudflare Pages, `/api/vote` attaches the visitor IP from `CF-Connecting-IP`; local Vite runs send the vote directly to Apps Script and therefore do not include a server-observed IP. The IP header is supplied by Cloudflare, not accepted from a browser-submitted field. Deploy `backend/Code.gs` as a new Apps Script version after backend changes. These fields apply to new votes; existing rows are not backfilled.
 
 The Apps Script Web App must be deployed and accessible before the live pandal search and voting will work. The web app URL is a public configuration value; never put `ADMIN_KEY` in the frontend environment.
 

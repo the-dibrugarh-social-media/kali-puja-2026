@@ -151,12 +151,14 @@ function doPost(e) {
         if (rowEvent === EVENT_ID && rowCategory === categoryId && normalizeEmail_(rows[i][voterCol]) === voterId) return { duplicate: true };
       }
       const last = rows.length;
-      const ipHits = ip ? rows.slice(1).filter(r => r[col_(headers, 'IP')] === ip).length : 0;
-      const gpsHits = hasGps ? rows.slice(1).filter(r => Number.isFinite(Number(r[col_(headers, 'Lat')])) && Math.abs(Number(r[col_(headers, 'Lat')]) - lat) < 0.0005 && Math.abs(Number(r[col_(headers, 'Lng')]) - lng) < 0.0005).length : 0;
+      const eventRows = rows.slice(1).filter(r => String(r[eventCol] || 'durga-puja-2026') === EVENT_ID);
+      const ipHits = ip ? eventRows.filter(r => r[col_(headers, 'IP')] === ip).length : 0;
+      const gpsHits = hasGps ? eventRows.filter(r => Number.isFinite(Number(r[col_(headers, 'Lat')])) && Math.abs(Number(r[col_(headers, 'Lat')]) - lat) < 0.0005 && Math.abs(Number(r[col_(headers, 'Lng')]) - lng) < 0.0005).length : 0;
+      const deviceHits = fp ? eventRows.filter(r => String(r[col_(headers, 'DeviceFingerprint')] || '') === fp).length : 0;
       const row = new Array(headers.length).fill('');
       const put = (name, value) => { const index = col_(headers, name); if (index >= 0) row[index] = value; };
       put('Timestamp', new Date()); put('VoterEmail', safeCell_(voterId)); put('VoterType', voterType); put('Pandal_ID', pandal.id); put('Pandal_Name', safeCell_(pandal.name));
-      put('DeviceFingerprint', fp); put('Lat', hasGps ? lat : ''); put('Lng', hasGps ? lng : ''); put('GPSAccuracy', Number.isFinite(Number(gps.accuracy)) ? Math.round(Number(gps.accuracy)) : ''); put('IP', ip);
+      put('DeviceFingerprint', fp); put('DeviceFlag', deviceHits >= 3 ? 'DEVICE_FLAGGED' : ''); put('Lat', hasGps ? lat : ''); put('Lng', hasGps ? lng : ''); put('GPSAccuracy', hasGps && Number.isFinite(Number(gps.accuracy)) ? Math.round(Number(gps.accuracy)) : ''); put('IP', ip);
       put('UserAgent', safeCell_(String(device.userAgent || '').slice(0, 300))); put('Screen', safeCell_(String(device.screen || '').slice(0, 30))); put('Timezone', safeCell_(String(device.timezone || '').slice(0, 60)));
       put('IPFlag', ipHits >= 3 ? 'IP_FLAGGED' : ''); put('GPSFlag', gpsHits >= 3 ? 'GPS_FLAGGED' : ''); put('Event_ID', EVENT_ID); put('Category_ID', categoryId);
       sheet.appendRow(row);
