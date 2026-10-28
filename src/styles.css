@@ -256,6 +256,23 @@ body{background:#080910;color:#f0ebdf}
 .pandal-card[role="button"]:focus-visible{outline:3px solid #b38a42;outline-offset:4px}
 .pandal-card-arrow{width:34px;height:34px;flex:0 0 34px;border:1px solid #c7b9a3;color:#44382e;display:grid;place-items:center;transition:background .2s,color .2s,transform .2s}
 .pandal-card[role="button"]:hover .pandal-card-arrow{background:#d8b36a;color:#16110b;transform:translateX(2px)}
+.hero-brand-title{max-width:none!important;margin:18px 0 8px!important;font-size:clamp(44px,6.9vw,86px)!important;line-height:.98!important;letter-spacing:-.065em!important;white-space:nowrap;color:#f4ebdd;text-shadow:0 6px 38px #0009}
+.hero-presenter{font-size:11px;letter-spacing:.2em;color:#f0ce7d}
+.hero-event-title{margin:0 0 16px;color:#dfbd75;font:italic 500 clamp(24px,3vw,37px)/1.15 'Playfair Display',serif;letter-spacing:-.02em}
+.hero-event-title em{color:#f5e9d5}
+@media(max-width:620px){.hero-brand-title{font-size:clamp(35px,10vw,48px)!important;margin:15px 0 8px!important}.hero-presenter{font-size:8px;letter-spacing:.16em}.hero-event-title{font-size:25px;margin-bottom:12px}}
+.instagram-spotlight{position:relative;overflow:hidden;background:radial-gradient(ellipse at 8% 15%,#55212c 0%,#21131e 48%,#0e1019 100%);border-top:1px solid #e2b95b66;border-bottom:1px solid #e2b95b66}
+.instagram-spotlight:before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,#e9c56b,#df5365 48%,#7566c5)}
+.instagram-spotlight .section-kicker{color:#e6d6c9}
+.instagram-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin:42px 0 34px}
+.instagram-heading .eyebrow{margin:0;color:#f0cf7a;font-size:10px}
+.instagram-heading h2{margin:18px 0 0;color:#fff1e5;font:400 clamp(46px,6vw,78px)/.98 'Playfair Display',serif;letter-spacing:-.045em}
+.instagram-heading h2 em{color:#f07983;font-weight:400}
+.instagram-visit{display:inline-flex;align-items:center;justify-content:center;gap:13px;min-height:52px;padding:0 20px;border:1px solid #f0c96b;background:#f0c96b;color:#1b1110;text-decoration:none;font-size:12px;font-weight:800;white-space:nowrap;box-shadow:0 0 30px #f0c96b3d;transition:transform .2s,background .2s}
+.instagram-visit:hover{transform:translateY(-2px);background:#ffe394}
+.instagram-embed-frame{width:min(100%,620px);min-height:460px;margin:0 auto;padding:20px;border:1px solid #f0c96b7a;background:#0809108a;box-shadow:0 18px 70px #0006}
+.instagram-embed-frame .instagram-media{min-height:420px!important;max-width:540px!important}
+@media(max-width:620px){.instagram-heading{display:block;margin:30px 0 25px}.instagram-heading h2{font-size:43px}.instagram-visit{margin-top:22px}.instagram-embed-frame{min-height:440px;padding:10px}.instagram-embed-frame .instagram-media{min-height:410px!important}}
 
 .vote-duplicate-warning{display:grid;gap:6px;margin:18px 0 10px;padding:14px 16px;border:2px solid #e85a62;border-left-width:6px;background:linear-gradient(105deg,#742431,#481d2b);color:#fff5ef;text-align:left;box-shadow:0 0 0 4px #d92c391f,0 9px 24px #5a142a30}
 .vote-duplicate-warning strong{color:#ffd7ca;font-size:10px;font-weight:900;letter-spacing:.16em;line-height:1.4}

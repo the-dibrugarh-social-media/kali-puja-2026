@@ -1,6 +1,6 @@
 # Kali Puja · Dibrugarh 2026
 
-A fresh React festival voting experience with a dedicated Google Apps Script backend. The visible brand line reads “The_Dibrugarh presents.” The scroller keeps a large “Cast your vote” callout visible while cycling through three Kali Puja facts. The intro includes a link to the [Incredible India Kali Puja guide](https://www.incredibleindia.gov.in/en/festivals-and-events/kali-puja). The Dibrugarh Instagram link is optional and is not part of voting. The supplied logo is used in the header, footer, favicon, and share metadata. The hero uses a high-resolution Unsplash image of Maa Kali from Amadpur, and the introduction uses a diya photograph. Both have photographer credits in the page footer. These are mood photographs, not Dibrugarh pandal entries.
+A React festival voting experience presented by The_Dibrugarh. The home flow opens with the presenter brand, moves directly to pandal discovery and the three live award leaderboards, and closes with rotating Kali Puja facts. Voters can choose Best Pandal, Best Puja or Best Theme. The Dibrugarh Instagram link is optional and is not part of voting. The supplied logo appears in the header, footer, favicon and share metadata. Festival photography is atmospheric imagery, not a listing of local pandals.
 
 ## Run the frontend locally
 

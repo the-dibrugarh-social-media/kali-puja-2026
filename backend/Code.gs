@@ -7,7 +7,7 @@
 const EVENT_ID = 'kali-puja-2026';
 const VOTES_SHEET = 'Votes';
 const PANDALS_SHEET = 'Pandals';
-const CATEGORIES = ['best_pandal', 'best_puja', 'best_murti'];
+const CATEGORIES = ['best_pandal', 'best_puja', 'best_theme'];
 const GOOGLE_CLIENT_ID = PropertiesService.getScriptProperties().getProperty('GOOGLE_CLIENT_ID') || '225466365069-19p02tbr3h2mkfiu3d9rjc18bdm4k86l.apps.googleusercontent.com';
 const DRIVE_FOLDER_NAME = 'Kali Puja 2026 - Pandal Photos';
 const VOTING_CLOSES_AT = PropertiesService.getScriptProperties().getProperty('KALI_VOTING_CLOSES_AT') || '';
