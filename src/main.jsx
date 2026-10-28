@@ -155,6 +155,20 @@ function App() {
     return () => window.clearInterval(timer);
   }, []);
   useEffect(() => {
+    if (!selected) return undefined;
+    const handleEscape = event => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (busy) return;
+      setSelected(null);
+      setCategory(null);
+      setError('');
+    };
+    window.addEventListener('keydown', handleEscape, true);
+    return () => window.removeEventListener('keydown', handleEscape, true);
+  }, [selected, busy]);
+  useEffect(() => {
     if (!('IntersectionObserver' in window)) { document.querySelectorAll('.reveal').forEach(el => el.classList.add('is-visible')); return; }
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {
       if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
