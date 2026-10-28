@@ -482,3 +482,11 @@ body{background:#080910;color:#f0ebdf}
 .vote-callout>div{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
 .vote-callout strong{color:#ff526b;font-size:clamp(22px,2.4vw,28px);font-weight:900;line-height:1.15;letter-spacing:.045em}
 .vote-callout span{color:#f4e8e8;font-size:13px;font-weight:600;line-height:1.5}
+
+/* Keep the voting callout aligned with the search and area controls. */
+.vote-callout{width:100%;max-width:850px;box-sizing:border-box}
+.search-row{width:100%;max-width:850px}
+.searchbox,.area-select{width:100%;height:68px;box-sizing:border-box}
+.searchbox>svg,.searchbox button,.area-select>svg{color:#ff2948}
+.searchbox,.area-select{border-color:#ff2948}
+@media(max-width:620px){.searchbox,.area-select{height:66px}}
