@@ -310,3 +310,175 @@ body{background:#080910;color:#f0ebdf}
 .vote-duplicate-warning strong{color:#ffd7ca;font-size:10px;font-weight:900;letter-spacing:.16em;line-height:1.4}
 .vote-duplicate-warning span{font-size:13px;font-weight:650;letter-spacing:0;line-height:1.55}
 @media(max-width:620px){.vote-duplicate-warning{padding:12px 13px}.vote-duplicate-warning span{font-size:12px}}
+
+/* Preserve the original palette; strengthen type and make the brand easier to see. */
+.topbar{height:136px}
+.brand img{width:120px;height:120px}
+.brand small{font-size:9px;color:#f0e2c9;font-weight:700}
+.brand b{font-size:20px;font-weight:700}
+.hero-text,.discover-heading>p,.section-heading>p,.intro-note{font-weight:600}
+.searchbox,.area-select{height:64px}
+.searchbox input{font-size:16px;font-weight:600}
+.searchbox input::placeholder{opacity:1}
+.area-select select{font-size:14px;font-weight:600}
+.pandal-title-line h3,.pandal-info h3{font-weight:700}
+.pandal-title-line p{font-weight:600}
+.category-tile p,.rank-entry small{font-size:12px;font-weight:500}
+.vote-brand-watermark{position:absolute!important;z-index:0!important;left:50%!important;top:50%!important;right:auto!important;bottom:auto!important;transform:translate(-50%,-50%)!important;width:min(42%,210px)!important;height:auto!important;max-height:68%!important;object-fit:contain;opacity:.055!important;filter:saturate(.85);pointer-events:none}
+.vote-modal>*:not(.vote-brand-watermark){z-index:1}
+@media(max-width:850px){.topbar{height:124px}.brand img{width:108px;height:108px}}
+@media(max-width:620px){
+ html{scroll-padding-top:100px}
+ .topbar{height:132px;padding:0 13px}
+ .brand{gap:9px}
+ .brand img{width:116px;height:116px;max-width:32vw;max-height:32vw}
+ .brand b{font-size:18px}
+ .brand small{font-size:8px}
+ .hero{padding-top:132px}
+ .search-row{flex-direction:column;gap:12px}
+ .searchbox,.area-select{width:100%;height:62px}
+ .searchbox input{font-size:16px}
+ .area-select{min-width:0}
+ .area-select select{font-size:14px}
+ .vote-brand-watermark{width:min(58%,230px)!important;opacity:.05!important}
+}
+
+/* Red type accents only; retain the existing palette and backgrounds. */
+.discover h2 em,.intro h2 em,.vote-modal h2 em{color:#ba203b}
+.discover .dark-eyebrow,.selected-pandal>span{color:#b51f39}
+.hero-presenter,.hero-event-title{color:#ff6575}
+.hero-event-title em{color:#ffd078}
+.leaderboard-title em{color:#ff6476}
+.instagram-spotlight-copy h2 em{color:#ff6a78}
+
+/* More vivid red accents and a brighter festival home hero. */
+.hero{background:radial-gradient(ellipse at 78% 40%,#d02f48 0%,#7e1c43 30%,#321637 62%,#100c16 100%)}
+.hero:before{content:'';position:absolute;z-index:0;inset:0;pointer-events:none;background:radial-gradient(ellipse at 76% 68%,#ff774455 0,transparent 42%),radial-gradient(ellipse at 90% 20%,#ff31552e 0,transparent 35%)}
+.hero:after{background:linear-gradient(90deg,#100c16 0%,#100c16d9 27%,#25112770 53%,#35132810 100%),linear-gradient(0deg,#100c16 0,transparent 34%)}
+.hero-photo{opacity:.96;filter:saturate(1.22) contrast(1.08) brightness(1.08)}
+.hero-presenter,.eyebrow{color:#ff7584}
+.hero-event-title{color:#ff506b}.hero-event-title em{color:#ffd275}
+.hero h1,.hero-brand-title{color:#fff9ef!important;text-shadow:0 3px 28px #210717aa}
+.hero-text{color:#fff5ed}.hero-meta,.hero-bottom{color:#ffe4c6}
+.brand i{color:#ff687a}
+.discover .section-kicker,.intro .section-kicker,.leaderboard .section-kicker{color:#bb2941}
+.discover h2 em,.intro h2 em,.vote-modal h2 em{color:#c21d3a}
+.category-tile>svg,.category-tile>button{color:#bd263f}
+.pandal-no,.selected-pandal{border-color:#c53249}
+.selected-pandal{box-shadow:inset 4px 0 #c53249}
+.modal-progress span.active{background:#c52b46;box-shadow:0 0 12px #c52b4655}
+.button-gold{background:linear-gradient(110deg,#ffe17b,#ffb649);color:#221411}
+.searchbox,.area-select{height:68px;border:2px solid #bd334c;box-shadow:0 7px 22px #80232b1c}
+.searchbox input{font-size:17px;font-weight:700}
+.searchbox input::placeholder{color:#776b70;opacity:1}
+.searchbox>svg{color:#b6233e}
+.area-select select{font-size:15px;font-weight:700}
+@media(max-width:620px){.searchbox,.area-select{height:66px}.searchbox input{font-size:16px}}
+
+/* Carry the organizer dashboard's periwinkle blue into the festival UI. */
+.hero-presenter{color:#aebeff}
+.hero-event-title em{color:#aebeff}
+.discover .dark-eyebrow,.discover .section-kicker{color:#667fcf}
+.intro .section-kicker{color:#aebeff}
+.searchbox,.area-select{border-color:#758ee0;box-shadow:0 7px 22px #283b791a}
+.searchbox>svg,.area-select>svg{color:#8ea8ff}
+.category-tile>svg{color:#aebeff}
+.leaderboard .section-kicker{color:#aebeff}
+.instagram-spotlight{box-shadow:inset 0 1px #aebeff22}
+
+/* Cream festival navigation and the outlined search field from the references. */
+.topbar{height:136px;background:#fff8ef;border-bottom:1px solid #eadccf;color:#342b2b}
+.brand{color:#342b2b}.brand small{color:#786b67}.brand b{color:#25202a}.brand i{color:#a63d35}
+.nav{gap:clamp(17px,2.7vw,42px)}
+.nav button,.menu-toggle{color:#4d4545;font-size:clamp(13px,1.35vw,18px);font-weight:650;letter-spacing:0}
+.nav button:hover{color:#b3182c}
+.nav .nav-home{position:relative;color:#b3182c}
+.nav .nav-home:after{content:"";position:absolute;left:20%;right:20%;bottom:-13px;height:3px;border-radius:4px;background:#c4142b}
+.searchbox,.area-select{background:#171522;border:2px solid #7788e8;color:#93a9ff}
+.searchbox{border-radius:0}
+.searchbox input{color:#fff;font-size:18px;font-weight:700}
+.searchbox input::placeholder{color:#b8aeb8;opacity:1}
+.searchbox>svg{color:#91a8ff}
+.searchbox button,.area-select>svg{color:#91a8ff}
+.area-select select,.area-select select option{background:#171522;color:#f8f1ed;font-size:15px;font-weight:650}
+@media(max-width:1000px){.topbar{padding:0 20px}.nav{gap:12px}.nav button{font-size:12px}.brand img{width:94px;height:94px}}
+@media(max-width:850px){.topbar{height:118px}.menu-toggle{display:block;padding:9px;border:1px solid #cfc1b6;background:#fffdf9;color:#453c43}.nav{display:none;position:absolute;top:100%;left:0;right:0;padding:14px 22px 20px;flex-direction:column;align-items:stretch;gap:4px;background:#fff8ef;border-bottom:1px solid #e5d6c9;box-shadow:0 16px 25px #17111d24}.nav.open{display:flex}.nav button{text-align:left;padding:13px 10px;font-size:16px}.nav .nav-home:after{left:10px;right:auto;bottom:5px;width:38px;height:2px}}
+@media(max-width:620px){.topbar{height:116px;padding:0 13px}.brand img{width:94px;height:94px;max-width:29vw;max-height:29vw}.brand b{font-size:17px}.brand small{font-size:7px}.nav{top:100%}.searchbox,.area-select{height:66px}.searchbox input{font-size:16px}}
+
+/* Use the reference layout without its cream surface; keep the festival's night palette. */
+.topbar{background:linear-gradient(180deg,#111321 0%,#141522 100%);border-bottom:1px solid #7183d45c;color:#f4eee6}
+.brand,.brand b{color:#f4eee6}.brand small{color:#c2bdc4}
+.nav button,.menu-toggle{color:#e9e4e5}.nav button:hover{color:#ff6575}
+.nav .nav-home{color:#ff5268}.nav .nav-home:after{background:#ed314d}
+.menu-toggle{border-color:#596694;background:#171a2b;color:#e8edff}
+.search-row{display:grid;grid-template-columns:minmax(0,1fr);max-width:850px;gap:12px}
+.searchbox,.area-select{width:100%;min-width:0}
+.searchbox input,.area-select select{min-width:0}
+.area-select{flex:none}
+@media(max-width:850px){.nav.open{background:#111321;border-color:#7183d45c;box-shadow:0 16px 25px #0008}}
+
+/* Kali Maa indigo for the logo and navigation bar. */
+.topbar{background:linear-gradient(105deg,#182c62 0%,#14234f 52%,#101a39 100%);border-bottom:1px solid #9eb5ff70;box-shadow:0 8px 30px #070b1d40}
+.brand,.brand b{color:#fff8ed}.brand small{color:#d3ddff}
+.nav button,.menu-toggle{color:#eef1ff}.nav button:hover{color:#ff8090}
+.nav .nav-home{color:#ff7180}.nav .nav-home:after{background:#ff435f}
+
+/* Strong crimson replaces softer pink and muted red accents. */
+:root{--crimson:#b00024;--crimson-bright:#ff2948;--crimson-glow:#ff526b}
+.nav button:hover,.nav .nav-home{color:var(--crimson-bright)}
+.nav .nav-home:after{background:var(--crimson-bright);box-shadow:0 0 12px #ff294866}
+.hero-presenter,.hero-event-title,.instagram-spotlight-copy h2 em{color:var(--crimson-bright)}
+.hero-event-title em{color:#ffd275}
+.discover h2 em,.vote-modal h2 em{color:var(--crimson)!important}
+.intro h2 em{color:#a00020!important}
+.category-tile.red>svg,.category-tile.red h3,.category-tile.red>button{color:var(--crimson-bright)}
+.modal-progress span.active{background:var(--crimson-bright);box-shadow:0 0 12px #ff294866}
+.selected-pandal{border-color:var(--crimson);box-shadow:inset 4px 0 var(--crimson-bright)}
+.selected-pandal>span,.vote-modal .eyebrow.dark-eyebrow{color:var(--crimson)}
+.admin-feedback.error,.form-error-loud,.vote-duplicate-warning{border-color:var(--crimson-bright)}
+
+/* Replace blue typography with the same crimson accent; keep blue outlines/icons. */
+.brand small{color:#ffd7d2}
+.hero-event-title em{color:var(--crimson-bright)}
+.discover .dark-eyebrow,.discover .section-kicker,.intro .section-kicker,.leaderboard .section-kicker{color:var(--crimson)}
+
+.brand b i{color:#ff2948!important;text-shadow:0 0 12px #ff294855}
+
+#about>.section-kicker>span:first-child{color:#e0002b}
+
+.searchbox{border-color:#ff2948;box-shadow:0 0 0 1px #ff294866,0 7px 22px #80152228}
+
+.area-select{border-color:#ff2948;box-shadow:0 0 0 1px #ff294866,0 7px 22px #80152228}
+
+.vote-modal>.vote-popup-brand{display:block;position:relative;z-index:1;width:min(220px,62%);max-height:96px;height:auto;object-fit:contain;margin:0 auto 14px;opacity:1;filter:none}
+.instagram-visit .instagram-brand-mark{display:block;width:100%;max-width:112px;height:auto;max-height:64px;object-fit:contain;opacity:1;filter:none}
+@media(max-width:620px){.vote-modal>.vote-popup-brand{width:min(200px,68%);max-height:84px;margin-bottom:10px}.instagram-visit .instagram-brand-mark{max-width:94px;max-height:55px}}
+
+.brand small{font-size:11px;font-weight:700;letter-spacing:.12em}
+.brand b{font-size:25px;line-height:1.1}
+@media(max-width:620px){.brand small{font-size:9px}.brand b{font-size:21px}}
+
+.instagram-handle{display:flex;align-items:center;justify-content:center;gap:6px}
+.instagram-handle svg{flex:none;color:#e9a8ff;filter:drop-shadow(0 0 5px #e1306c88)}
+.instagram-handle .instagram-social-icon{width:17px;height:17px;flex:none;color:#e9a8ff;filter:drop-shadow(0 0 5px #e1306c88)}
+
+.nav .nav-vote{display:inline-flex;align-items:center;gap:9px;padding:11px 16px;border:1px solid #ff2948;background:#b00024;color:#fff5ed;font-weight:800;letter-spacing:.04em}
+.nav .nav-vote:hover{background:#ff2948;color:#fff}
+.vote-callout{display:flex;align-items:center;gap:14px;margin:0 0 18px;padding:14px 16px;border:1px solid #ff2948;background:linear-gradient(100deg,#35131d,#1a1420);box-shadow:inset 4px 0 #ff2948,0 8px 22px #570b241f}
+.vote-callout strong{flex:none;color:#ff526b;font-size:11px;letter-spacing:.12em}
+.vote-callout span{color:#f4e8e8;font-size:13px;font-weight:600;line-height:1.5}
+@media(max-width:850px){.nav .nav-vote{justify-content:space-between;margin-top:5px;padding:13px 10px}.vote-callout{align-items:flex-start;flex-direction:column;gap:6px}}
+
+/* Instagram badge frames The_Dibrugarh mark inside the familiar camera outline. */
+.instagram-visit{border:0;background:transparent;box-shadow:none}
+.instagram-visit:hover{background:transparent;box-shadow:none}
+.instagram-visit .instagram-logo-frame{position:relative;display:grid;place-items:center;width:88px;height:88px;flex:none;border-radius:0;background:transparent;box-shadow:none}
+.instagram-visit .instagram-logo-frame>svg{position:absolute;inset:0;width:100%;height:100%;color:#f0c96b}
+.instagram-visit .instagram-logo-frame>svg rect,.instagram-visit .instagram-logo-frame>svg circle:not(:last-child){stroke:currentColor;stroke-width:4}
+.instagram-visit .instagram-brand-mark{position:relative;z-index:1;width:76px;height:35px;max-width:none;max-height:none;padding:2px;border-radius:0;background:transparent;object-fit:contain;opacity:1;filter:none}
+.instagram-handle svg,.instagram-handle .instagram-social-icon{color:#f0c96b;filter:none}
+@media(max-width:620px){.instagram-visit .instagram-logo-frame{width:68px;height:68px;border-radius:18px}.instagram-visit .instagram-brand-mark{width:58px;height:27px}}
+
+.vote-callout>div{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+.vote-callout strong{color:#ff526b;font-size:clamp(22px,2.4vw,28px);font-weight:900;line-height:1.15;letter-spacing:.045em}
+.vote-callout span{color:#f4e8e8;font-size:13px;font-weight:600;line-height:1.5}

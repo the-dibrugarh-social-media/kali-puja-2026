@@ -1,6 +1,6 @@
 # Kali Puja · Dibrugarh 2026
 
-A React festival voting experience presented by The_Dibrugarh. The home flow opens with the presenter brand, moves directly to pandal discovery and the three live award leaderboards, and closes with rotating Kali Puja facts. Voters can choose Best Pandal, Best Puja or Best Theme. The Dibrugarh Instagram link is optional and is not part of voting. The supplied logo appears in the header, footer, favicon and share metadata. Festival photography is atmospheric imagery, not a listing of local pandals.
+A React festival voting experience presented by The_Dibrugarh. The home flow opens with the presenter brand, moves directly to pandal discovery and the three live award leaderboards, and closes with rotating Kali Puja facts. Voters can choose Best Pandal, Best Pratima or Best Theme. The Dibrugarh Instagram link is optional and is not part of voting. The supplied logo appears in the header, footer, favicon and share metadata. Festival photography is atmospheric imagery, not a listing of local pandals.
 
 ## Run the frontend locally
 
