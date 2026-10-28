@@ -610,7 +610,7 @@ body{background:#080910;color:#f0ebdf}
   .pandal-scroll{max-height:min(78svh,630px)}
   .pandal-grid{grid-template-columns:minmax(0,1fr);gap:10px}
   .pandal-card{display:grid;grid-template-columns:112px minmax(0,1fr);min-height:126px}
-  .pandal-image{height:126px}
+  .pandal-image{height:auto;aspect-ratio:1}
   .pandal-info{min-width:0;padding:9px;align-items:flex-start;gap:6px}
   .pandal-info>div.pandal-title-line{gap:5px}
   .pandal-title-line h3{font-size:13px;line-height:1.2}
