@@ -13,7 +13,7 @@ npm ci
 npm run dev -- --host 127.0.0.1
 ```
 
-Do not open `index.html` directly as a `file://` URL; React module assets require the local web server. To connect real pandal search and voting, copy `.env.example` to `.env.local` and set `VITE_APPS_SCRIPT_URL` to the deployed Apps Script web app URL. Phone voting does not depend on Google configuration. `VITE_GOOGLE_CLIENT_ID` is optional because the supplied client ID is already the default.
+Do not open `index.html` directly as a `file://` URL; React module assets require the local web server. To connect real pandal search and voting, create `.env.local` with `VITE_APPS_SCRIPT_URL` set to the deployed Apps Script web app URL. Phone voting does not depend on Google configuration. `VITE_GOOGLE_CLIENT_ID` is optional because the supplied client ID is already the default.
 
 Without the Apps Script URL, the UI intentionally shows an unconnected state and does not show fake pandals or sample vote counts.
 
