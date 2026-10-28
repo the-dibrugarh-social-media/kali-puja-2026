@@ -51,6 +51,14 @@ function pandalsSheet_() { return sheet_(PANDALS_SHEET, PANDAL_HEADERS); }
 function headers_(sheet) { return sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0].map(String); }
 function col_(headers, label) { return headers.indexOf(label); }
 function normalizeEmail_(value) { return String(value || '').trim().toLowerCase(); }
+function gpsNear_(latA, lngA, latB, lngB) {
+  const values = [latA, lngA, latB, lngB].map(Number);
+  if (!values.every(Number.isFinite)) return false;
+  const radians = value => value * Math.PI / 180;
+  const dLat = radians(values[2] - values[0]), dLng = radians(values[3] - values[1]);
+  const a = Math.min(1, Math.sin(dLat / 2) ** 2 + Math.cos(radians(values[0])) * Math.cos(radians(values[2])) * Math.sin(dLng / 2) ** 2);
+  return 6371000 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) <= 75;
+}
 function normalizePhone_(value) {
   let digits = String(value || '').replace(/\D/g, '');
   if (digits.length === 12 && digits.slice(0, 2) === '91') digits = digits.slice(2);
@@ -155,7 +163,7 @@ function doPost(e) {
       const categoryRows = eventRows.filter(r => String(r[categoryCol] || 'best_pandal') === categoryId);
       const userAgent = String(device.userAgent || '').slice(0, 300), screen = String(device.screen || '').slice(0, 30), timezone = String(device.timezone || '').slice(0, 60);
       const ipHits = ip ? categoryRows.filter(r => r[col_(headers, 'IP')] === ip).length : 0;
-      const gpsHits = hasGps ? categoryRows.filter(r => Number.isFinite(Number(r[col_(headers, 'Lat')])) && Math.abs(Number(r[col_(headers, 'Lat')]) - lat) < 0.0005 && Math.abs(Number(r[col_(headers, 'Lng')]) - lng) < 0.0005).length : 0;
+      const gpsHits = hasGps ? categoryRows.filter(r => gpsNear_(r[col_(headers, 'Lat')], r[col_(headers, 'Lng')], lat, lng)).length : 0;
       const deviceHits = fp ? eventRows.filter(r => String(r[col_(headers, 'DeviceFingerprint')] || '') === fp).length : 0;
       const deviceCategoryHits = fp ? categoryRows.filter(r => String(r[col_(headers, 'DeviceFingerprint')] || '') === fp).length : 0;
       const profileHits = userAgent && screen && timezone ? categoryRows.filter(r => String(r[col_(headers, 'UserAgent')]) === userAgent && String(r[col_(headers, 'Screen')]) === screen && String(r[col_(headers, 'Timezone')]) === timezone).length : 0;

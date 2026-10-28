@@ -4,8 +4,6 @@ import { ArrowDown, ArrowLeft, ArrowRight, Check, ChevronDown, Compass, Crown, F
 import './styles.css';
 
 const EVENT_ID = 'kali-puja-2026';
-const DEVICE_TOKEN_KEY = 'the_dibrugarh_vote_device_v1';
-let sessionDeviceToken = '';
 const PUJA_FACTS = [
   'Kali Puja is also known as Shyama Puja.',
   'It is observed on Kartik Amavasya, the new-moon night.',
@@ -60,36 +58,40 @@ async function voteDeviceContext() {
   };
   let deviceFingerprint = '';
   try {
-    deviceFingerprint = window.localStorage.getItem(DEVICE_TOKEN_KEY) || sessionDeviceToken;
-    if (!/^[a-f0-9]{64}$/.test(deviceFingerprint)) {
-      const bytes = new Uint8Array(32);
-      if (window.crypto?.getRandomValues) window.crypto.getRandomValues(bytes);
-      else for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
-      deviceFingerprint = Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
-      sessionDeviceToken = deviceFingerprint;
-      try { window.localStorage.setItem(DEVICE_TOKEN_KEY, deviceFingerprint); } catch {}
-    }
-  } catch {
-    if (!/^[a-f0-9]{64}$/.test(sessionDeviceToken)) {
-      const bytes = new Uint8Array(32);
-      if (window.crypto?.getRandomValues) window.crypto.getRandomValues(bytes);
-      else for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
-      sessionDeviceToken = Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
-    }
-    deviceFingerprint = sessionDeviceToken;
-  }
+    const canvas = document.createElement('canvas');
+    canvas.width = 220; canvas.height = 40;
+    const context = canvas.getContext('2d');
+    if (!context || !window.crypto?.subtle) return { device, deviceFingerprint: '' };
+    context.textBaseline = 'top'; context.font = '14px Arial';
+    context.fillText('the-dibrugarh-kali-puja-vote-signal', 2, 2);
+    let gpu = '';
+    try {
+      const gl = document.createElement('canvas').getContext('webgl');
+      const debug = gl?.getExtension('WEBGL_debug_renderer_info');
+      if (debug) gpu = gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) || '';
+    } catch {}
+    const raw = [device.userAgent, navigator.language || '', device.screen,
+      window.screen?.colorDepth || '', device.timezone, navigator.hardwareConcurrency || '',
+      gpu, canvas.toDataURL()].join('||');
+    const digest = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw));
+    deviceFingerprint = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+  } catch { deviceFingerprint = ''; }
   return { device, deviceFingerprint };
 }
 function voteLocation() {
   return new Promise(resolve => {
     if (!navigator.geolocation) return resolve(null);
-    try {
-      navigator.geolocation.getCurrentPosition(
-        position => resolve({ lat: position.coords.latitude, lng: position.coords.longitude, accuracy: position.coords.accuracy }),
-        () => resolve(null),
-        { enableHighAccuracy: true, maximumAge: 0 },
-      );
-    } catch { resolve(null); }
+    let finished = false, guard;
+    const finish = value => { if (finished) return; finished = true; clearTimeout(guard); resolve(value); };
+    guard = setTimeout(() => finish(null), 20000);
+    const success = position => finish({ lat: position.coords.latitude, lng: position.coords.longitude, accuracy: position.coords.accuracy });
+    const retryCoarse = error => {
+      if (error?.code === 1 || finished) return finish(null);
+      try { navigator.geolocation.getCurrentPosition(success, () => finish(null), { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 }); }
+      catch { finish(null); }
+    };
+    try { navigator.geolocation.getCurrentPosition(success, retryCoarse, { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }); }
+    catch { finish(null); }
   });
 }
 async function prepareImageUpload(file) {
