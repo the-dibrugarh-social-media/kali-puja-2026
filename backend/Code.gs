@@ -10,6 +10,7 @@ const PANDALS_SHEET = 'Pandals';
 const CATEGORIES = ['best_pandal', 'best_puja', 'best_theme'];
 const GOOGLE_CLIENT_ID = PropertiesService.getScriptProperties().getProperty('GOOGLE_CLIENT_ID') || '225466365069-19p02tbr3h2mkfiu3d9rjc18bdm4k86l.apps.googleusercontent.com';
 const DRIVE_FOLDER_NAME = 'Kali Puja 2026 - Pandal Photos';
+const VOTING_CLOSED = true;
 const VOTING_CLOSES_AT = PropertiesService.getScriptProperties().getProperty('KALI_VOTING_CLOSES_AT') || '';
 const PANDALS_CACHE_SECONDS = 30;
 const COUNTS_CACHE_SECONDS = 5;
@@ -136,7 +137,7 @@ function doPost(e) {
     const data = JSON.parse(e.postData.contents);
     if (data.action && data.action !== 'vote') return adminAction_(data);
     if (String(data.eventId || '') !== EVENT_ID) return responseError_('This event is not accepting votes.');
-    if (VOTING_CLOSES_AT && Date.now() > new Date(VOTING_CLOSES_AT).getTime()) return responseError_('Voting has closed.');
+    if (VOTING_CLOSED || (VOTING_CLOSES_AT && Date.now() > new Date(VOTING_CLOSES_AT).getTime())) return responseError_('Voting has closed.');
     const categoryId = String(data.categoryId || '');
     if (CATEGORIES.indexOf(categoryId) < 0) return responseError_('Choose one of the available voting categories.');
     if (data.pandalId == null || data.pandalId === '') return responseError_('No pandal selected.');
