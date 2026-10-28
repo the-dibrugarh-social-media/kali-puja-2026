@@ -30,7 +30,7 @@ jobs:
       - name: Build the site
         run: npm run build -- --base="/${{ github.event.repository.name }}/"
         env:
-          VITE_APPS_SCRIPT_URL: ${{ vars.VITE_APPS_SCRIPT_URL || 'https://script.google.com/macros/s/AKfycbxQrZXIlIv6vhNE8hRDPkC0TD40LR_DfMiK1_tkRvOJBOTdf3ZW3c3onico6sKmKaWGSg/exec' }}
+          VITE_APPS_SCRIPT_URL: ${{ vars.VITE_APPS_SCRIPT_URL }}
       - name: Enable client-side routes
         run: cp dist/index.html dist/404.html
       - name: Upload site artifact
