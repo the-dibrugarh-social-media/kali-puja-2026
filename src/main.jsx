@@ -48,6 +48,9 @@ function formatIndianPhone(value) {
   const digits = String(value || '').replace(/\D/g, '').slice(-10);
   return digits.length === 10 ? `+91 ${digits.slice(0, 5)} ${digits.slice(5)}` : '+91 ' + value;
 }
+function sortPandalsByName(pandals) {
+  return [...pandals].sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'en', { sensitivity: 'base', numeric: true }));
+}
 
 async function apiGet(params) {
   if (!API_URL) throw new Error('Connect the Apps Script URL to load this event’s live pandal list.');
@@ -144,7 +147,7 @@ function App() {
 
   async function refresh() {
     setLoading(true); setLoadError('');
-    try { const data = await apiGet({ pandals: '1', eventId: EVENT_ID }); if (data.status !== 'success') throw new Error(data.message || 'Could not load pandals.'); setPandals((data.pandals || []).filter(p => p.active)); }
+    try { const data = await apiGet({ pandals: '1', eventId: EVENT_ID }); if (data.status !== 'success') throw new Error(data.message || 'Could not load pandals.'); setPandals(sortPandalsByName((data.pandals || []).filter(p => p.active))); }
     catch (e) { setLoadError(e.message); setPandals([]); }
     finally { setLoading(false); }
   }
@@ -228,8 +231,9 @@ function App() {
   }
   async function loadAdminPandals(key = adminKey) {
     const data = await adminRequest({ action: 'getAdminPandals' }, key);
-    setAdminPandals(data.pandals || []);
-    return data.pandals || [];
+    const sortedPandals = sortPandalsByName(data.pandals || []);
+    setAdminPandals(sortedPandals);
+    return sortedPandals;
   }
   async function unlockAdmin(e) {
     e?.preventDefault(); setAdminBusy(true); setAdminError(''); setAdminNotice('');
