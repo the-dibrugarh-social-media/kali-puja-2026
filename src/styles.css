@@ -38,6 +38,49 @@ body{background:#080910;color:#f0ebdf}
 @media(max-width:620px){.ribbon-track{animation-duration:48s}.ribbon-track .ribbon-fact{flex-basis:430px;width:430px;max-width:430px}.social-cta{width:100%}}
 @media(prefers-reduced-motion:reduce){.social-cta,.success-view,.success-mark,.success-mark:before,.success-mark:after,.button-spinner{animation:none!important}.social-cta svg:last-child{transition:none}}
 
+/* A warmer, more ceremonial finish for the voting journey. */
+.modal-backdrop{background:radial-gradient(ellipse at 50% 38%,#4a1c25a8 0%,#09070be8 68%);backdrop-filter:blur(10px)}
+.vote-modal{border:1px solid #c6a969;background:radial-gradient(ellipse at 100% 0%,#e8d6b2 0%,transparent 36%),linear-gradient(150deg,#f2eadc 0%,#e8ddca 58%,#e1d3bd 100%);box-shadow:0 28px 100px #000b,0 0 0 6px #d5b46b12;animation:vote-modal-enter .38s cubic-bezier(.2,.8,.2,1) both}
+.vote-modal:after{content:"";position:absolute;inset:9px;border:1px solid #a8844730;pointer-events:none}
+.vote-modal>*{position:relative;z-index:1}
+.modal-close{z-index:2;width:34px;height:34px;display:grid;place-items:center;border:1px solid #a58b6248;border-radius:50%;transition:background .2s,color .2s,transform .2s}
+.modal-close:hover{background:#671e2b;color:#fff;transform:rotate(90deg)}
+.modal-progress{gap:7px;margin-bottom:11px}
+.modal-progress span{height:3px;border-radius:9px;transition:background .25s,transform .25s}
+.modal-progress span.active{background:#a43b44;box-shadow:0 0 10px #a43b4444}
+.modal-step-caption{display:flex;justify-content:space-between;gap:14px;margin:0 30px 26px 0;color:#87765d;font-size:8px;font-weight:700;letter-spacing:.15em}
+.modal-step-caption span:first-child{color:#a34639}
+.vote-modal>.eyebrow{margin:0 0 5px}
+.vote-modal h2{margin:12px 0 20px;line-height:.99}
+.selected-pandal{position:relative;padding:15px 16px 14px 18px;border:1px solid #bca77f;background:#fff9ed99;box-shadow:inset 3px 0 #b8494e}
+.selected-pandal>span{color:#a34639;font-weight:700}
+.selected-pandal strong{font-size:19px;line-height:1.3}
+.modal-hint{font-size:11px;line-height:1.75;color:#665b4f;margin:18px 0}
+.modal-categories{gap:9px;margin-bottom:20px}
+.modal-categories button{min-height:62px;padding:13px 15px;border-radius:2px;transition:transform .18s,border-color .2s,background .2s,box-shadow .2s}
+.modal-categories button:hover:not(.selected){transform:translateX(3px);border-color:#a67f49;box-shadow:0 5px 16px #47331b12}
+.modal-categories button.selected{border-color:#a34639;background:linear-gradient(110deg,#f0dfbf,#ead6b4);box-shadow:inset 3px 0 #a34639,0 6px 16px #47331b14}
+.modal-categories button b{font-size:15px}
+.modal-categories button small{font-size:9px;letter-spacing:.015em}
+.vote-modal .full-button,.vote-modal .modal-actions>.button{min-height:48px;padding-inline:20px;justify-content:center;gap:10px;letter-spacing:.025em;box-shadow:0 7px 18px #26170d20;transition:transform .18s,box-shadow .18s,background .18s}
+.vote-modal .full-button:hover:not(:disabled),.vote-modal .modal-actions>.button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 22px #26170d2c}
+.auth-option{min-height:54px;border-radius:2px;transition:transform .18s,border-color .18s,background .18s}
+.auth-option:hover{transform:translateY(-1px);border-color:#a67f49}
+.active-auth{box-shadow:inset 0 0 0 1px #a67f4966}
+.phone-field>div{height:54px;border-color:#b9a787;background:#fff9ed}
+.phone-field input{font-size:14px}
+.review-box{padding:17px;background:#fff9edb5;border-color:#c5b28e}
+.review-box div+div{padding-top:11px;border-top:1px solid #d8cbb4}
+.review-box strong{font-size:15px}
+.vote-duplicate-warning{border-color:#a74448;background:linear-gradient(105deg,#772531,#4d202e);box-shadow:0 6px 18px #571e2b20;font-size:10px;letter-spacing:.12em}
+.rules-check{font-size:10px;color:#5d5348}
+.form-error-loud{border:1px solid #ae3440;border-left:5px solid #ae3440;background:linear-gradient(110deg,#7b2632,#501d2b);box-shadow:0 8px 22px #4c152525;font-size:13px}
+.form-error-loud:before{content:none}
+.success-view>p:not(.eyebrow){font-size:13px}
+@keyframes vote-modal-enter{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:620px){.vote-modal{max-height:calc(100svh - 20px);padding:30px 22px 25px}.modal-step-caption{margin-bottom:21px}.vote-modal h2{margin:12px 0 17px}.modal-categories button{min-height:58px}}
+@media(prefers-reduced-motion:reduce){.vote-modal{animation:none}.modal-close,.modal-categories button,.auth-option,.vote-modal .full-button,.vote-modal .modal-actions>.button{transition:none}}
+
 /* Home refresh: tighter festival intro, rotating facts, and a calm continuous vote ticker. */
 .hero h1{font-size:clamp(56px,6.45vw,84px);line-height:1.02;max-width:590px}
 .hero-text{max-width:440px;font-size:14px;line-height:1.72;color:#d0c4c4}

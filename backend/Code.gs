@@ -182,8 +182,7 @@ function doPost(e) {
       return { duplicate: false, row: last + 1 };
     });
     if (!outcome.ok) return responseError_('The voting service is busy. Please try again shortly.');
-    if (outcome.value.duplicate) return responseError_('DUPLICATE VOTE — You have already voted in this category. Duplicate votes will be cancelled.', 'duplicate');
-    if (outcome.value.suspicious) return responseError_('VOTE BLOCKED — This browser/device has already voted in this category, or this submission strongly matches another vote across device, network, or location signals. Duplicate votes will be cancelled. Contact the organizers if you think this is a mistake.', 'duplicate');
+    if (outcome.value.duplicate || outcome.value.suspicious) return responseError_('Your vote was rejected because duplicate voting is not allowed.', 'duplicate');
     clearCaches_();
     return json_({ status: 'success', message: 'Vote recorded.', eventId: EVENT_ID, categoryId: categoryId });
   } catch (err) { return responseError_(String(err)); }
