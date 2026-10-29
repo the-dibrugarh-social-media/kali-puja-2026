@@ -170,11 +170,6 @@ function doPost(e) {
       const ipHits = ip ? categoryRows.filter(r => r[col_(headers, 'IP')] === ip).length : 0;
       const gpsHits = hasGps ? categoryRows.filter(r => gpsNear_(r[col_(headers, 'Lat')], r[col_(headers, 'Lng')], lat, lng)).length : 0;
       const deviceHits = fp ? eventRows.filter(r => String(r[col_(headers, 'DeviceFingerprint')] || '') === fp).length : 0;
-      const deviceCategoryHits = fp ? categoryRows.filter(r => String(r[col_(headers, 'DeviceFingerprint')] || '') === fp).length : 0;
-      const profileHits = userAgent && screen && timezone ? categoryRows.filter(r => String(r[col_(headers, 'UserAgent')]) === userAgent && String(r[col_(headers, 'Screen')]) === screen && String(r[col_(headers, 'Timezone')]) === timezone).length : 0;
-      const deviceMatch = deviceCategoryHits > 0 || profileHits > 0;
-      const multiSignalDuplicate = deviceMatch && (ipHits > 0 || gpsHits > 0);
-      if ((fp && deviceCategoryHits > 0) || multiSignalDuplicate) return { suspicious: true };
       const row = new Array(headers.length).fill('');
       const put = (name, value) => { const index = col_(headers, name); if (index >= 0) row[index] = value; };
       put('Timestamp', new Date()); put('VoterEmail', safeCell_(voterId)); put('VoterType', voterType); put('Pandal_ID', pandal.id); put('Pandal_Name', safeCell_(pandal.name));
@@ -187,7 +182,7 @@ function doPost(e) {
       return { duplicate: false, row: last + 1 };
     });
     if (!outcome.ok) return responseError_('The voting service is busy. Please try again shortly.');
-    if (outcome.value.duplicate || outcome.value.suspicious) return responseError_('Your vote was rejected because duplicate voting is not allowed.', 'duplicate');
+    if (outcome.value.duplicate) return responseError_('This phone number or Google account has already voted in this category.', 'duplicate');
     clearCaches_();
     return json_({ status: 'success', message: 'Vote recorded.', eventId: EVENT_ID, categoryId: categoryId });
   } catch (err) { return responseError_(String(err)); }
