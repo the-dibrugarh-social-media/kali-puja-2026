@@ -778,10 +778,6 @@ body{background:#080910;color:#f0ebdf}
 
 @media(max-width:620px){.instagram-spotlight .instagram-visit{display:flex;width:max-content;max-width:100%;margin:22px auto 0}.instagram-spotlight .instagram-handle{white-space:nowrap}}
 
-/* Three tiny diya accents sit together above, outside the moving ribbon. */
-.city-ribbon-wrap{position:relative;z-index:1}
-.ribbon-diyas{position:absolute;z-index:3;top:-16px;left:50%;display:flex;gap:4px;height:12px;transform:translateX(-50%);pointer-events:none}
-.ribbon-diyas svg{display:block;width:15px;height:12px;flex:none;overflow:visible;filter:drop-shadow(0 0 3px #ffd56a66)}
 
 /* The replacement Kali PNG is a transparent cutout; remove the old poster frame and caption. */
 .hero-maa-art{overflow:visible;border:0;border-radius:0;background:transparent}
