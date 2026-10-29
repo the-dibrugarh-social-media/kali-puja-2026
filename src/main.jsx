@@ -16,9 +16,9 @@ function PujaMark({ size = 22, strokeWidth = 1.5, ...props }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}><path d="M12 3c1.4 2 2.2 3.3 2.2 4.8a2.2 2.2 0 1 1-4.4 0C9.8 6.3 10.6 5 12 3Z"/><path d="M4.5 13h15c-.7 3-3.4 5-7.5 5s-6.8-2-7.5-5Z"/><path d="M6.5 18h11M9 21h6"/></svg>;
 }
 const PUJA_FACTS = [
+  'Hibiscus flowers are a familiar offering to Maa Kali.',
   'Kali Puja is also known as Shyama Puja.',
   'It is observed on Kartik Amavasya, the new-moon night.',
-  'Hibiscus flowers are a familiar offering to Maa Kali.',
   'Pandal artistry, lamps and shared prayer bring the night to life.',
   'The observance often falls on the same night as Diwali.',
   'Midnight is a sacred hour for Kali Puja prayers.',
@@ -43,7 +43,7 @@ const PUJA_PHOTOS = [
   { src: 'https://images.unsplash.com/photo-1718476971217-677d43112daa?auto=format&fit=crop&w=1800&h=1200&q=82', alt: 'A warm arrangement of lit oil lamps' },
   { src: 'https://images.unsplash.com/photo-1752667842245-df9137483078?auto=format&fit=crop&w=1200&h=800&q=78', alt: 'A small oil lamp glowing in the darkness' },
   { src: 'https://images.unsplash.com/photo-1666638787411-c5c8ef25d229?auto=format&fit=crop&w=1800&h=1200&q=82', alt: 'A group of candles glowing in a dark room' },
-  { src: 'https://images.unsplash.com/photo-1667031232580-13bee9c42e86?auto=format&fit=crop&w=1800&h=1200&q=82', alt: 'A candle flame glowing in a traditional lamp' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Kamakhya_Temple%2C_Guwahati%2C_Assam.jpg/960px-Kamakhya_Temple%2C_Guwahati%2C_Assam.jpg', alt: 'Kamakhya Temple in Guwahati, Assam. Photo by Bhaskar Bhuyan, CC BY 4.0.' },
 ];
 function pandalDisplayName(name) {
   const value = String(name || '');
@@ -346,7 +346,7 @@ function App() {
         <div className="hero-feature" aria-label="Festival facts and photos">
           <div className="fact-card" aria-live="polite"><div className="fact-card-label"><span>KALI PUJA FACTS</span></div><p key={featureIndex} className="fact-card-text">{PUJA_FACTS[featureIndex]}</p></div>
           <span className="hero-feature-divider" aria-hidden="true"/>
-          <figure id="gallery" className="intro-photo hero-feature-photo" aria-label="Rotating festival photos"><div className="intro-photo-stack">{PUJA_PHOTOS.map((photo, i) => <img key={photo.src} className={i === featureIndex ? 'active' : ''} src={photo.src} alt={photo.alt} loading="eager" onError={e => { const image = e.currentTarget; if (image.dataset.fallback) return; image.dataset.fallback = 'true'; image.src = i === 0 ? `${BASE_URL}kali-maa-face.jpeg` : DIYA_PHOTO; }}/>)}</div><div className="photo-caption"><span>FESTIVAL LIGHTS</span></div></figure>
+          <figure id="gallery" className="intro-photo hero-feature-photo" aria-label="Rotating festival photos"><div className="intro-photo-stack">{PUJA_PHOTOS.map((photo, i) => <img key={photo.src} className={i === featureIndex ? 'active' : ''} src={photo.src} alt={photo.alt} loading="eager" onError={e => { const image = e.currentTarget; if (image.dataset.fallback) return; image.dataset.fallback = 'true'; image.src = i === 0 ? `${BASE_URL}kali-maa-face.jpeg` : DIYA_PHOTO; }}/>)}</div><div className={featureIndex === 7 ? 'photo-caption kamakhya-caption' : 'photo-caption'}><span>{featureIndex === 7 ? <><a href="https://commons.wikimedia.org/wiki/File:Kamakhya_Temple,_Guwahati,_Assam.jpg" target="_blank" rel="noopener noreferrer">KAMAKHYA TEMPLE · PHOTO: BHASKAR BHUYAN</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0 · CROPPED</a></> : 'FESTIVAL LIGHTS'}</span></div></figure>
         </div>
         <div className="hero-seal"><span className="seal-top">KARTIK AMAVASYA</span><span className="seal-symbol">ॐ</span><span className="seal-bottom">KALI PUJA</span></div>
         <div className="hero-bottom"><span>THE FESTIVAL</span><span>SCROLL TO DISCOVER <ChevronDown size={13}/></span></div>
