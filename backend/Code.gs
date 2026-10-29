@@ -71,10 +71,11 @@ function flagMatchedRows_(sheet, headers, allRows, matches, field) {
   if (index < 0) return;
   matches.forEach(row => {
     const rowIndex = allRows.indexOf(row);
-    if (rowIndex > 0 && String(row[index] || '') !== flagValue) {
-      sheet.getRange(rowIndex + 1, index + 1).setValue(flagValue);
-    }
+    if (rowIndex > 0) markFlagCell_(sheet, rowIndex + 1, index + 1, flagValue);
   });
+}
+function markFlagCell_(sheet, rowIndex, columnIndex, flagValue) {
+  sheet.getRange(rowIndex, columnIndex).setValue(flagValue).setBackground('#f4cccc').setFontColor('#990000');
 }
 function normalizePhone_(value) {
   let digits = String(value || '').replace(/\D/g, '');
@@ -169,10 +170,11 @@ function doPost(e) {
     const pandal = pandals_(EVENT_ID).find(item => String(item.id) === String(data.pandalId) && item.active);
     if (!pandal) return responseError_('That pandal is not available for voting.');
     const gps = data.gps || {}, lat = Number(gps.lat), lng = Number(gps.lng);
-    const hasGps = Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180;
+    const hasGps = gps.lat !== '' && gps.lat != null && gps.lng !== '' && gps.lng != null && Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180;
     const device = data.device || {}, fp = /^[a-f0-9]{64}$/.test(String(data.deviceFingerprint || '')) ? String(data.deviceFingerprint) : '';
     const ip = normalizeIp_(data.ip);
-    if (!ip) return responseError_('Your IP address could not be read. This vote was not recorded. Please use the official voting site and try again.');
+    if (!ip) return responseError_('Your IP address could not be verified. This vote was not recorded. Please use the official voting site and try again.');
+    if (!fp) return responseError_('This device could not be verified. Please enable a secure browser and try again.');
     const outcome = lock_(function () {
       const sheet = votesSheet_(), headers = headers_(sheet), rows = sheet.getDataRange().getValues();
       const voterCol = col_(headers, 'VoterEmail'), eventCol = col_(headers, 'Event_ID'), categoryCol = col_(headers, 'Category_ID');
@@ -181,44 +183,48 @@ function doPost(e) {
       const userAgent = String(device.userAgent || '').slice(0, 300), screen = String(device.screen || '').slice(0, 30), timezone = String(device.timezone || '').slice(0, 60);
       const ipCol = col_(headers, 'IP'), latCol = col_(headers, 'Lat'), lngCol = col_(headers, 'Lng');
       const fingerprintCol = col_(headers, 'DeviceFingerprint'), uaCol = col_(headers, 'UserAgent'), screenCol = col_(headers, 'Screen'), timezoneCol = col_(headers, 'Timezone');
-      const ipMatches = ip && ipCol >= 0 ? categoryRows.filter(r => normalizeIp_(r[ipCol]) === ip) : [];
+      const ipMatches = ipCol >= 0 ? categoryRows.filter(r => normalizeIp_(r[ipCol]) === ip) : [];
       const gpsMatches = hasGps && latCol >= 0 && lngCol >= 0 ? categoryRows.filter(r => gpsNear_(r[latCol], r[lngCol], lat, lng)) : [];
-      const deviceMatches = fp && fingerprintCol >= 0 ? categoryRows.filter(r => String(r[fingerprintCol] || '') === fp) : [];
+      const deviceMatches = fingerprintCol >= 0 ? categoryRows.filter(r => String(r[fingerprintCol] || '') === fp) : [];
       const hasProfile = !!(userAgent && screen && timezone && uaCol >= 0 && screenCol >= 0 && timezoneCol >= 0);
       const profileMatches = hasProfile ? categoryRows.filter(r => String(r[uaCol] || '') === userAgent && String(r[screenCol] || '') === screen && String(r[timezoneCol] || '') === timezone) : [];
       const sameVoterMatches = categoryRows.filter(r => normalizeEmail_(r[voterCol]) === voterId);
-      const ipFlagCol = col_(headers, 'IPFlag'), gpsFlagCol = col_(headers, 'GPSFlag'), deviceFlagCol = col_(headers, 'DeviceFlag');
-      const ipAlreadyFlagged = ipMatches.some(r => ipFlagCol >= 0 && String(r[ipFlagCol] || '') === 'IP_FLAGGED');
-      const gpsAlreadyFlagged = gpsMatches.some(r => gpsFlagCol >= 0 && String(r[gpsFlagCol] || '') === 'GPS_FLAGGED');
-      const deviceAlreadyFlagged = deviceMatches.some(r => deviceFlagCol >= 0 && String(r[deviceFlagCol] || '') === 'DEVICE_FLAGGED');
-      const duplicateNetworkLocation = ipMatches.length > 0 && gpsMatches.length > 0;
-      const duplicateNetworkProfile = ipMatches.length > 0 && profileMatches.length > 0;
-      const duplicateLocationProfile = gpsMatches.length > 0 && profileMatches.length > 0;
-      const repeatedNetwork = ipMatches.length >= 3;
-      const repeatedLocation = gpsMatches.length >= 3;
-      const duplicate = sameVoterMatches.length > 0 || deviceMatches.length > 0 || duplicateNetworkLocation || duplicateNetworkProfile || duplicateLocationProfile || repeatedNetwork || repeatedLocation || ipAlreadyFlagged || gpsAlreadyFlagged || deviceAlreadyFlagged;
+      // Pair IP and GPS on the same earlier vote. This combination is a red review flag;
+      // shared network/location alone does not reject a voter.
+      const networkLocationMatches = hasGps
+        ? categoryRows.filter(r => ipCol >= 0 && normalizeIp_(r[ipCol]) === ip && latCol >= 0 && lngCol >= 0 && gpsNear_(r[latCol], r[lngCol], lat, lng))
+        : [];
+      const profileMatchSet = new Set(profileMatches);
+      const sameNetworkLocationDevice = networkLocationMatches.some(r =>
+        (fingerprintCol >= 0 && String(r[fingerprintCol] || '') === fp) || profileMatchSet.has(r));
+      const duplicate = sameVoterMatches.length > 0 || deviceMatches.length > 0 || sameNetworkLocationDevice;
+      if (networkLocationMatches.length > 0) {
+        flagMatchedRows_(sheet, headers, rows, networkLocationMatches, 'IPFlag');
+        flagMatchedRows_(sheet, headers, rows, networkLocationMatches, 'GPSFlag');
+      }
       if (duplicate) {
-        flagMatchedRows_(sheet, headers, rows, ipMatches, 'IPFlag');
-        flagMatchedRows_(sheet, headers, rows, gpsMatches, 'GPSFlag');
         flagMatchedRows_(sheet, headers, rows, deviceMatches.concat(profileMatches), 'DeviceFlag');
         SpreadsheetApp.flush();
-        return { duplicate: true };
+        return { duplicate: true, reason: sameVoterMatches.length ? 'account' : 'device' };
       }
       const last = rows.length;
-      const deviceHits = fp ? eventRows.filter(r => fingerprintCol >= 0 && String(r[fingerprintCol] || '') === fp).length : 0;
       const row = new Array(headers.length).fill('');
       const put = (name, value) => { const index = col_(headers, name); if (index >= 0) row[index] = value; };
       put('Timestamp', new Date()); put('VoterEmail', safeCell_(voterId)); put('VoterType', voterType); put('Pandal_ID', pandal.id); put('Pandal_Name', safeCell_(pandal.name));
-      put('DeviceFingerprint', fp); put('DeviceFlag', deviceHits >= 3 ? 'DEVICE_FLAGGED' : ''); put('Lat', hasGps ? lat : ''); put('Lng', hasGps ? lng : ''); put('GPSAccuracy', hasGps && Number.isFinite(Number(gps.accuracy)) ? Math.round(Number(gps.accuracy)) : ''); put('IP', ip);
+      put('DeviceFingerprint', fp); put('DeviceFlag', ''); put('Lat', hasGps ? lat : ''); put('Lng', hasGps ? lng : ''); put('GPSAccuracy', hasGps && Number.isFinite(Number(gps.accuracy)) ? Math.round(Number(gps.accuracy)) : ''); put('IP', ip);
       put('UserAgent', safeCell_(userAgent)); put('Screen', safeCell_(screen)); put('Timezone', safeCell_(timezone));
-      put('IPFlag', ipMatches.length >= 2 ? 'IP_FLAGGED' : ''); put('GPSFlag', gpsMatches.length >= 2 ? 'GPS_FLAGGED' : ''); put('Event_ID', EVENT_ID); put('Category_ID', categoryId);
+      put('IPFlag', networkLocationMatches.length > 0 || ipMatches.length >= 2 ? 'IP_FLAGGED' : ''); put('GPSFlag', networkLocationMatches.length > 0 || gpsMatches.length >= 2 ? 'GPS_FLAGGED' : ''); put('Event_ID', EVENT_ID); put('Category_ID', categoryId);
       sheet.appendRow(row);
+      [['IPFlag', row[col_(headers, 'IPFlag')]], ['GPSFlag', row[col_(headers, 'GPSFlag')]], ['DeviceFlag', row[col_(headers, 'DeviceFlag')]]].forEach(([field, value]) => {
+        const index = col_(headers, field);
+        if (value && index >= 0) markFlagCell_(sheet, sheet.getLastRow(), index + 1, value);
+      });
       if (voterType === 'phone') sheet.getRange(sheet.getLastRow(), voterCol + 1).setNumberFormat('@').setValue(voterId);
       SpreadsheetApp.flush();
       return { duplicate: false, row: last + 1 };
     });
     if (!outcome.ok) return responseError_('The voting service is busy. Please try again shortly.');
-    if (outcome.value.duplicate) return responseError_('This category already has a vote matching your account, device, network or location. Duplicate votes are not accepted.', 'duplicate');
+    if (outcome.value.duplicate) return responseError_(outcome.value.reason === 'account' ? 'This account has already voted in this category.' : 'This device has already voted in this category, or the same device, IP and location were used together. Duplicate votes are not accepted.', 'duplicate');
     clearCaches_();
     return json_({ status: 'success', message: 'Vote recorded.', eventId: EVENT_ID, categoryId: categoryId });
   } catch (err) { return responseError_(String(err)); }
