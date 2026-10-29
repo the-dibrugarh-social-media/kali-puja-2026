@@ -168,7 +168,7 @@ body{background:#080910;color:#f0ebdf}
 .intro-photo-stack{position:absolute;inset:0}
 .intro-photo-stack img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 55%;opacity:0;transform:scale(1.025);transition:opacity 1.1s ease,transform 6s ease;filter:saturate(.82)}
 .intro-photo-stack img.active{opacity:1;transform:scale(1)}
-.photo-caption{position:absolute;z-index:2;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;padding:23px 48px 11px 13px;background:linear-gradient(transparent,#090b17db);color:#f3e9de;font-size:8px;letter-spacing:.15em}
+.photo-caption{position:absolute;z-index:2;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;padding:23px 48px 11px 13px;background:linear-gradient(transparent,#090b17db);color:#f3e9de;font-size:8px;letter-spacing:.15em}.photo-caption a{color:inherit;text-decoration:underline;text-decoration-color:#ffd166;text-underline-offset:2px}.kamakhya-caption{padding-right:8px;font-size:6px;letter-spacing:.06em;line-height:1.4}.kamakhya-caption span{display:block;max-width:100%;overflow-wrap:anywhere}
 .photo-prev,.photo-next{position:absolute;z-index:3;top:10px;width:30px;height:30px;display:grid;place-items:center;border:1px solid #f0e7d37a;background:#090b17a3;color:#f4e8cf;backdrop-filter:blur(5px);transition:background .2s,color .2s}
 .photo-prev{right:47px}.photo-next{right:10px}.photo-prev:hover,.photo-next:hover{background:#d9bd78;color:#10121d}
 @media(max-width:620px){
