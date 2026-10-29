@@ -25,7 +25,10 @@ export async function onRequestPost({ request, env }) {
   }
 
   const visitorIp = request.headers.get('CF-Connecting-IP') || '';
-  if (visitorIp) vote.ip = visitorIp;
+  if (!visitorIp) {
+    return Response.json({ status: 'error', message: 'Your IP address could not be verified. This vote was not recorded.' }, { status: 503 });
+  }
+  vote.ip = visitorIp;
 
   try {
     const upstream = await fetch(destination, {
