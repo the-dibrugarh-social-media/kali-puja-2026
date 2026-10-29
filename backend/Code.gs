@@ -8,6 +8,9 @@ const EVENT_ID = 'kali-puja-2026';
 const VOTES_SHEET = 'Votes';
 const PANDALS_SHEET = 'Pandals';
 const CATEGORIES = ['best_pandal', 'best_puja', 'best_theme'];
+// Guardrails: one device fingerprint per award category (up to three event votes).
+// Matching IP + nearby GPS is flagged red for review; that shared signal alone is not a rejection.
+// A matching device or browser profile combined with the same IP + nearby GPS is rejected.
 const GOOGLE_CLIENT_ID = PropertiesService.getScriptProperties().getProperty('GOOGLE_CLIENT_ID') || '225466365069-19p02tbr3h2mkfiu3d9rjc18bdm4k86l.apps.googleusercontent.com';
 const DRIVE_FOLDER_NAME = 'Kali Puja 2026 - Pandal Photos';
 const VOTING_CLOSES_AT = PropertiesService.getScriptProperties().getProperty('KALI_VOTING_CLOSES_AT') || '';
@@ -80,6 +83,7 @@ function markFlagCell_(sheet, rowIndex, columnIndex, flagValue) {
 function normalizePhone_(value) {
   let digits = String(value || '').replace(/\D/g, '');
   if (digits.length === 12 && digits.slice(0, 2) === '91') digits = digits.slice(2);
+  if (digits.length === 11 && digits.charAt(0) === '0') digits = digits.slice(1);
   return /^[6-9]\d{9}$/.test(digits) ? '+91' + digits : '';
 }
 function verifyGoogleIdToken_(token) {
