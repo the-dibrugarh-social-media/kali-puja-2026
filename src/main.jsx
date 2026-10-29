@@ -17,13 +17,13 @@ function PujaMark({ size = 22, strokeWidth = 1.5, ...props }) {
 }
 const PUJA_FACTS = [
   'Hibiscus flowers are a familiar offering to Maa Kali.',
+  'Kamakhya’s calendar lists two Kali observances: Dakshina Kali in July and Shyama Kali at Diwali.',
   'Kali Puja is also known as Shyama Puja.',
   'It is observed on Kartik Amavasya, the new-moon night.',
   'Pandal artistry, lamps and shared prayer bring the night to life.',
   'The observance often falls on the same night as Diwali.',
   'Midnight is a sacred hour for Kali Puja prayers.',
   'Some communities keep vigil in prayer through the night.',
-  'Kamakhya’s calendar lists two Kali observances: Dakshina Kali in July and Shyama Kali at Diwali.',
 ];
 const CATEGORIES = [
   { id: 'best_pandal', title: 'Best Pandal', subtitle: 'Architecture · imagination · craft', icon: PandalMark, tone: 'gold', description: 'For the pandal that transforms a place into a world of its own.' },
@@ -37,13 +37,13 @@ const FESTIVAL_PHOTO = 'https://images.unsplash.com/photo-1760857292318-2b6398e2
 const DIYA_PHOTO = 'https://images.unsplash.com/photo-1605292356183-a77d0a9c9d1d?auto=format&fit=crop&w=1800&h=1200&q=82';
 const PUJA_PHOTOS = [
   { src: DIYA_PHOTO, alt: 'A diya flame glowing in the dark' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Kamakhya_Temple%2C_Guwahati%2C_Assam.jpg/960px-Kamakhya_Temple%2C_Guwahati%2C_Assam.jpg', alt: 'Kamakhya Temple in Guwahati, Assam. Photo by Bhaskar Bhuyan, CC BY 4.0.' },
   { src: 'https://images.unsplash.com/photo-1669393969283-1aaeebfc2ea2?auto=format&fit=crop&w=1800&h=1200&q=82', alt: 'A lit clay diya surrounded by warm festival lights' },
   { src: 'https://images.unsplash.com/photo-1606285461069-80ba562575dd?auto=format&fit=crop&w=1800&h=1200&q=82', alt: 'Rows of glowing diyas on a dark surface' },
   { src: 'https://images.unsplash.com/photo-1761057292491-74eae3d187fe?auto=format&fit=crop&w=1800&h=1200&q=82', alt: 'Festival candles glowing with lights in the background' },
   { src: 'https://images.unsplash.com/photo-1718476971217-677d43112daa?auto=format&fit=crop&w=1800&h=1200&q=82', alt: 'A warm arrangement of lit oil lamps' },
   { src: 'https://images.unsplash.com/photo-1752667842245-df9137483078?auto=format&fit=crop&w=1200&h=800&q=78', alt: 'A small oil lamp glowing in the darkness' },
   { src: 'https://images.unsplash.com/photo-1666638787411-c5c8ef25d229?auto=format&fit=crop&w=1800&h=1200&q=82', alt: 'A group of candles glowing in a dark room' },
-  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Kamakhya_Temple%2C_Guwahati%2C_Assam.jpg/960px-Kamakhya_Temple%2C_Guwahati%2C_Assam.jpg', alt: 'Kamakhya Temple in Guwahati, Assam. Photo by Bhaskar Bhuyan, CC BY 4.0.' },
 ];
 function pandalDisplayName(name) {
   const value = String(name || '');
@@ -214,8 +214,8 @@ function App() {
     return () => observer.disconnect();
   }, []);
   useEffect(() => {
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
-    const timer = window.setInterval(() => setFeatureIndex(index => (index + 1) % PUJA_FACTS.length), 4500);
+    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const timer = window.setInterval(() => setFeatureIndex(index => (index + 1) % PUJA_FACTS.length), reducedMotion ? 8000 : 4500);
     return () => window.clearInterval(timer);
   }, []);
   const areas = useMemo(() => ['All areas', ...new Set(pandals.map(p => p.area).filter(Boolean))], [pandals]);
@@ -346,7 +346,7 @@ function App() {
         <div className="hero-feature" aria-label="Festival facts and photos">
           <div className="fact-card" aria-live="polite"><div className="fact-card-label"><span>KALI PUJA FACTS</span></div><p key={featureIndex} className="fact-card-text">{PUJA_FACTS[featureIndex]}</p></div>
           <span className="hero-feature-divider" aria-hidden="true"/>
-          <figure id="gallery" className="intro-photo hero-feature-photo" aria-label="Rotating festival photos"><div className="intro-photo-stack">{PUJA_PHOTOS.map((photo, i) => <img key={photo.src} className={i === featureIndex ? 'active' : ''} src={photo.src} alt={photo.alt} loading="eager" onError={e => { const image = e.currentTarget; if (image.dataset.fallback) return; image.dataset.fallback = 'true'; image.src = i === 0 ? `${BASE_URL}kali-maa-face.jpeg` : DIYA_PHOTO; }}/>)}</div><div className={featureIndex === 7 ? 'photo-caption kamakhya-caption' : 'photo-caption'}><span>{featureIndex === 7 ? <><a href="https://commons.wikimedia.org/wiki/File:Kamakhya_Temple,_Guwahati,_Assam.jpg" target="_blank" rel="noopener noreferrer">KAMAKHYA TEMPLE · PHOTO: BHASKAR BHUYAN</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0 · CROPPED</a></> : 'FESTIVAL LIGHTS'}</span></div></figure>
+          <figure id="gallery" className="intro-photo hero-feature-photo" aria-label="Rotating festival photos"><div className="intro-photo-stack">{PUJA_PHOTOS.map((photo, i) => <img key={photo.src} className={i === featureIndex ? 'active' : ''} src={photo.src} alt={photo.alt} loading="eager" onError={e => { const image = e.currentTarget; if (image.dataset.fallback) return; image.dataset.fallback = 'true'; image.src = i === 0 ? `${BASE_URL}kali-maa-face.jpeg` : DIYA_PHOTO; }}/>)}</div><div className={featureIndex === 1 ? 'photo-caption kamakhya-caption' : 'photo-caption'}><span>{featureIndex === 1 ? <><a href="https://commons.wikimedia.org/wiki/File:Kamakhya_Temple,_Guwahati,_Assam.jpg" target="_blank" rel="noopener noreferrer">KAMAKHYA TEMPLE · PHOTO: BHASKAR BHUYAN</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0 · CROPPED</a></> : 'FESTIVAL LIGHTS'}</span></div></figure>
         </div>
         <div className="hero-seal"><span className="seal-top">KARTIK AMAVASYA</span><span className="seal-symbol">ॐ</span><span className="seal-bottom">KALI PUJA</span></div>
         <div className="hero-bottom"><span>THE FESTIVAL</span><span>SCROLL TO DISCOVER <ChevronDown size={13}/></span></div>
